@@ -1,27 +1,28 @@
-# Portfolio CV
+<a id="readme-top"></a>
 
-## 🛠️ Stack
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README">
+    <img src="./public/favicon.svg" alt="Logo" width="100" height="100">
+  </a>
 
-- [**Astro**](https://astro.build/) - The next-gen web framework.
-- [**Typescript**](https://www.typescriptlang.org/) - JavaScript with type syntax.
-- [**Ninja Keys**](https://github.com/ssleptsov/ninja-keys) - Dropdown menu with keyboard shortcuts made in pure JavaScript.
+  <h3 align="center">Portfolio</h3>
 
-## 🚀 Getting Started
+  <p align="center">
+    Welcome to My Portfolio <br>
+    This repository showcases my personal website, where I present my projects, skills, and experience. Built with modern web technologies, it serves as my digital portfolio.
 
-### 1. Use this Repo as an Astro Project Template
+  </p>
 
-- I use [pnpm](https://pnpm.io/installation) as my package manager.
+![Astro](https://img.shields.io/badge/Astro-BC52EE.svg?style=for-the-badge&logo=Astro&logoColor=white)
+![Json](https://img.shields.io/badge/JSON-000000.svg?style=for-the-badge&logo=JSON&logoColor=white)
 
-```bash
-# Enable pnpm on MacOS, WSL & Linux:
-corepack enable
-corepack prepare pnpm@latest --activate
-```
+---
 
-# Initialize the project
-```bash
-pnpm create astro@latest -- --template Smilesharks/dev-portfolio
-```
+</div>
+
+
 
 ### 2. Add Your Content:
 
@@ -38,15 +39,10 @@ pnpm dev
 ### 4. Customisable colours:
 Change the data-theme of `cv.json` and choose one of the colour themes defined in theme.css, red, blue, green, cyber and default, with its variants in dark mode, or create your own.
 
-## 🧞 Commands
+## Commands
 
 |     | Command         | Action                                                                       |
 | :-- | :-------------- | :--------------------------------------------------------------------------- |
 | ⚙️  | `dev` o `start` | Launches a local development server at `localhost:4321`.                   |
 | ⚙️  | `build`         | Checks for errors and creates a production build in `./dist/`. |
 | ⚙️  | `preview`       | Local preview at `localhost:4321`                                       |
-
-
-CV JSON schema from [**jsonresume.org**](https://jsonresume.org/schema/)
-
-Based on [**Bartosz Jarocki - Print-friendly, minimalist CV page**](https://github.com/BartoszJarocki/cv) and [**Miguel Ángel Durán - minimalist-portfolio-json**](https://github.com/midudev/minimalist-portfolio-json)
