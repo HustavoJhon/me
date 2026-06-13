@@ -17,6 +17,19 @@ import Swift from "@/icons/swift.astro"
 import SwiftUI from "@/icons/swiftui.astro"
 import Kotlin from "@/icons/kotlin.astro"
 import Flutter from "@/icons/flutter.astro"
+import Figma from "@/icons/Figma.astro"
+import Gitlab from "@/icons/Gitlab.astro"
+import CSharp from "@/icons/csharp.astro"
+import DotNet from "@/icons/dotnet.astro"
+import Laravel from "@/icons/laravel.astro"
+import Vue from "@/icons/vue.astro"
+import Java from "@/icons/java.astro"
+import Python from "@/icons/python.astro"
+import Go from "@/icons/go.astro"
+import Docker from "@/icons/docker.astro"
+import AstroIcon from "@/icons/astro.astro"
+import Shell from "@/icons/bash.astro"
+import Linux from "@/icons/linux.astro"
 
 const SKILLS_ICONS: Record<string, any> = {
   HTML,
@@ -34,6 +47,19 @@ const SKILLS_ICONS: Record<string, any> = {
   SwiftUI,
   Kotlin,
   Flutter,
+  Figma,
+  Gitlab,
+  "C#": CSharp,
+  ".NET": DotNet,
+  Laravel,
+  Vue,
+  Java,
+  Python,
+  Go,
+  Docker,
+  Astro: AstroIcon,
+  Shell,
+  Linux,
 }
 ---
 <Section className={Astro.props.className} title="Experience">
@@ -80,7 +106,7 @@ const SKILLS_ICONS: Record<string, any> = {
                     <ul class="text-skin-muted [&>li]:ml-4 flex list-disc flex-col gap-2">
                       {Array.isArray(summary) ? (
                         summary.map(item => (
-                          {item}
+                          <li>{item}</li>
                         ))
                       ) : (
                         <li>{summary}</li>
@@ -122,7 +148,7 @@ const SKILLS_ICONS: Record<string, any> = {
 
                 <ul class="flex print:hidden flex-wrap gap-2" aria-label="Technologies used">
                   {skills && skills.map(skill => {
-                    const iconName = skill === "Next.js" ? "Next" : skill
+                    const iconName = ({ "Next.js": "Next", "CSharp": "C#", ".Net": ".NET" })[skill] ?? skill
                     const Icon = SKILLS_ICONS[iconName]
                     return (
                       <li class="bg-skin-button-accent/20 border-skin-hue/20 text-skin-hue print:p-0 print:bg-transparent print:text-zinc-800 flex gap-1 items-center border-solid print:border-none border rounded-md px-2 py-0.5 text-xs">

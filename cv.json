@@ -5,9 +5,9 @@
     "image": "/me_avatar.jpg",
     "email": "hustavojhon@gmail.com",
     "phone": "+51 944 480 535",
-    "url": "https://johndoe.dev",
-    "summary": "Entusiasta de la programación y de las distribuciones de Linux, apasionado por construir aplicaciones web. Actualmente, busco oportunidades para desarrollar mis habilidades en un entorno profesional y contribuir a proyectos innovadores.",
-    "theme": "default",
+    "url": "https://hustavojhon.vercel.app",
+    "summary": "Desarrollador backend con enfoque en C#/.NET, Java y Laravel. Entusiasta de Linux y las tecnologías open source. Apasionado por construir aplicaciones web escalables y contribuir a proyectos innovadores. Actualmente trabajo con arquitectura hexagonal y desarrollo de APIs REST.",
+    "theme": "gruvbox",
     "location": {
       "address": "",
       "postalCode": "08004",
@@ -28,7 +28,7 @@
       },
       {
         "network": "GitHub",
-        "username": "johndoe",
+        "username": "HustavoJhon",
         "url": "https://github.com/HustavoJhon"
       }
     ]
@@ -42,39 +42,30 @@
       "url": "https://ibit.pe",
       "startDate": "2024-01-01",
       "endDate": null,
-      "summary": "Developing custom software solutions, enhancing business productivity with Microsoft 365, and implementing SaaS technologies for Latin American companies. Collaborating with teams on web, mobile, and cloud applications to drive digital transformation.",
+      "summary": "Desarrollo de soluciones de software personalizadas, optimización de productividad empresarial con Microsoft 365 y SaaS para empresas latinoamericanas. Trabajo en equipo en aplicaciones web, móviles y cloud para impulsar la transformación digital.",
       "highlights": [
-        "Improved website performance by optimizing code"
+        "Optimización de rendimiento web mediante refactorización de código"
       ],
       "responsibilities": [
-        "Colaboré con desarrolladores senior en el diseño e implementación de servicios backend utilizando C# y .NET.",
-        "Aprender y familiarizarme con tecnologías como C#, .NET para integrarme de manera efectiva en el equipo de desarrollo backend"
+        "Diseñar e implementar servicios backend con C# y .NET siguiendo arquitectura hexagonal.",
+        "Desarrollar APIs REST para procesamiento de archivos XML y datos empresariales.",
+        "Colaborar en equipo bajo metodologías ágiles para entrega continua de software."
       ],
       "achievements": [
-        "Desarrollé una API REST backend utilizando C# y .NET, implementando una arquitectura hexagonal para facilitar la lectura y procesamiento de archivos XML."
+        "Implementé una API REST con C# y .NET usando arquitectura hexagonal para lectura y procesamiento de archivos XML.",
+        "Contribuí a la mejora de rendimiento de aplicaciones web mediante optimización de consultas y código."
       ],
       "skills": [
         "CSharp",
         ".Net",
         "MySQL",
         "Git",
-        "GitHub"
+        "GitHub",
+        "REST APIs"
       ]
     }
   ],
-  "volunteer": [
-    {
-      "organization": "Local Coding Club",
-      "position": "Volunteer",
-      "url": "https://codingclub.com/",
-      "startDate": "2021-01-01",
-      "endDate": "2022-01-01",
-      "summary": "Helped organize coding workshops and mentored new members.",
-      "highlights": [
-        "Awarded 'Volunteer of the Month'"
-      ]
-    }
-  ],
+  "volunteer": [],
   "education": [
     {
       "institution": "Universidad",
@@ -113,97 +104,192 @@
   ],
   "skills": [
     {
-      "name": "Figma",
-      "level": "Expert",
-      "keywords": [
-        "Design",
-        "UI"
-      ]
+      "name": "C#",
+      "level": "Intermediate",
+      "keywords": [".NET", "REST APIs", "Backend"],
+      "category": "Lenguajes"
     },
     {
-      "name": "HTML",
+      "name": "Java",
       "level": "Intermediate",
-      "keywords": [
-        "Web Development",
-        "Frontend"
-      ]
-    },
-    {
-      "name": "CSS",
-      "level": "Intermediate",
-      "keywords": [
-        "Web Development",
-        "Frontend",
-        "Responsive Design"
-      ]
+      "keywords": ["Spring Boot", "Backend", "POO"],
+      "category": "Lenguajes"
     },
     {
       "name": "JavaScript",
       "level": "Intermediate",
-      "keywords": [
-        "Web Development",
-        "Frontend",
-        "Backend",
-        "Fullstack"
-      ]
+      "keywords": ["Web Development", "Frontend", "Backend"],
+      "category": "Lenguajes"
+    },
+    {
+      "name": "Python",
+      "level": "Beginner",
+      "keywords": ["Scripting", "Automation"],
+      "category": "Lenguajes"
+    },
+    {
+      "name": "Go",
+      "level": "Beginner",
+      "keywords": ["Backend", "Concurrencia"],
+      "category": "Lenguajes"
+    },
+    {
+      "name": "Shell",
+      "level": "Intermediate",
+      "keywords": ["Linux", "Terminal", "Scripting"],
+      "category": "Lenguajes"
+    },
+    {
+      "name": ".NET",
+      "level": "Intermediate",
+      "keywords": ["C#", "Arquitectura Hexagonal"],
+      "category": "Backend"
+    },
+    {
+      "name": "Laravel",
+      "level": "Intermediate",
+      "keywords": ["PHP", "Blade", "MVC"],
+      "category": "Backend"
+    },
+    {
+      "name": "MySQL",
+      "level": "Intermediate",
+      "keywords": ["SQL", "Bases de Datos"],
+      "category": "Backend"
+    },
+    {
+      "name": "Vue",
+      "level": "Beginner",
+      "keywords": ["Frontend", "SPA", "JavaScript"],
+      "category": "Frontend"
+    },
+    {
+      "name": "Astro",
+      "level": "Beginner",
+      "keywords": ["Static Site", "Frontend"],
+      "category": "Frontend"
+    },
+    {
+      "name": "Docker",
+      "level": "Beginner",
+      "keywords": ["Contenedores", "DevOps"],
+      "category": "DevOps"
     },
     {
       "name": "Git",
       "level": "Intermediate",
-      "keywords": [
-        "Version Control",
-        "Collaboration",
-        "Source Code"
-      ]
+      "keywords": ["Version Control", "GitHub"],
+      "category": "Herramientas"
     },
     {
-      "name": "GitHub",
+      "name": "Linux",
       "level": "Intermediate",
-      "keywords": [
-        "Version Control",
-        "Collaboration",
-        "Source Code",
-        "Git"
-      ]
+      "keywords": ["Debian", "Terminal", "Dotfiles"],
+      "category": "Herramientas"
     }
   ],
   "languages": [
     {
-      "language": "English",
-      "fluency": "Native speaker"
+      "language": "Spanish",
+      "fluency": "Nativo"
     },
     {
-      "language": "Spanish",
-      "fluency": "Intermediate"
+      "language": "English",
+      "fluency": "Intermedio"
     }
   ],
   "interests": [
     {
-      "name": "Technology",
-      "keywords": [
-        "AI",
-        "Blockchain"
-      ]
-    }
-  ],
-  "references": [
+      "name": "Linux",
+      "keywords": ["Debian", "Dotfiles", "Terminal", "Neovim"]
+    },
     {
-      "name": "Jane Smith",
-      "reference": "Reference…"
+      "name": "Open Source",
+      "keywords": ["GitHub", "Contribucion", "Software Libre"]
+    },
+    {
+      "name": "Backend",
+      "keywords": ["APIs", "Arquitectura", "C#", "Java", "Laravel"]
     }
   ],
+  "references": [],
   "projects": [
+    {
+      "name": "wasiyuq",
+      "isActive": true,
+      "category": "Full Stack",
+      "description": "Plataforma de adopción responsable de mascotas. Construida con Laravel, Vue y Docker.",
+      "highlights": [
+        "Autenticación y roles de usuario",
+        "CRUD de mascotas con imágenes",
+        "Despliegue con Docker"
+      ],
+      "url": "https://github.com/HustavoJhon/wasiyuq",
+      "github": "https://github.com/HustavoJhon/wasiyuq"
+    },
+    {
+      "name": "dotfiles",
+      "isActive": true,
+      "category": "Entorno",
+      "description": "Configuraciones personalizadas para Linux (Neovim, tmux, zsh, warp). 6 estrellas en GitHub.",
+      "highlights": [
+        "Configuración de Neovim para desarrollo",
+        "Alias y funciones de zsh optimizados",
+        "Soporte para Debian-based distros"
+      ],
+      "url": "https://github.com/HustavoJhon/dotfiles",
+      "github": "https://github.com/HustavoJhon/dotfiles"
+    },
+    {
+      "name": "fade",
+      "isActive": true,
+      "category": "Full Stack",
+      "description": "Sistema de gestión para barberías con Laravel (Blade) y MySQL.",
+      "highlights": [
+        "Gestión de citas y clientes",
+        "Panel administrativo",
+        "Base de datos relacional"
+      ],
+      "url": "https://github.com/HustavoJhon/fade",
+      "github": "https://github.com/HustavoJhon/fade"
+    },
+    {
+      "name": "cosmetologia",
+      "isActive": true,
+      "category": "Frontend",
+      "description": "Sitio web estático para cosmetología construido con Astro y TailwindCSS.",
+      "highlights": [
+        "SSG con Astro",
+        "Diseño responsive con Tailwind",
+        "Despliegue en Vercel"
+      ],
+      "url": "https://cosmetologia-gamma.vercel.app",
+      "github": "https://github.com/HustavoJhon/cosmetologia"
+    },
+    {
+      "name": "basic",
+      "isActive": true,
+      "category": "Aprendizaje",
+      "description": "Colección de apuntes, snippets y proyectos de aprendizaje en Go, JavaScript, Python y más. 6 estrellas en GitHub.",
+      "highlights": [
+        "Ejercicios de algoritmos y estructuras de datos",
+        "Proyectos en múltiples lenguajes",
+        "Documentación de aprendizaje"
+      ],
+      "url": "https://github.com/HustavoJhon/basic",
+      "github": "https://github.com/HustavoJhon/basic"
+    },
     {
       "name": "university",
       "isActive": false,
-      "description": "University Projects Repository Code and projects developed throughout my academic journey.",
+      "category": "Académico",
+      "description": "Proyectos y códigos desarrollados durante mi formación universitaria en Ingeniería de Sistemas.",
       "highlights": [
-        "Algoritmos y Estructuras de Datos",
-        "Programacion Orientada a Objetos",
-        "Sistemas Operativos",
-        "Redes de Computadoras"
+        "Algoritmos y Estructuras de Datos en C++",
+        "Programación Orientada a Objetos",
+        "Matemáticas computacionales"
       ],
-      "url": "https://github.com/HustavoJhon/",
+      "url": "https://github.com/HustavoJhon/university",
       "github": "https://github.com/HustavoJhon/university"
     }
   ]

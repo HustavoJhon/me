@@ -1,0 +1,57 @@
+---
+import Git from "@/icons/git.astro";
+
+export interface Props {
+	url: string;
+	description: string;
+	highlights: string[];
+	name: string;
+	isActive: boolean;
+	github?: string;
+}
+
+const { url, description, highlights, name, isActive, github } = Astro.props;
+---
+
+<div
+	role="contentinfo"
+	class="cursor-pointer grid-span-1 ring-skin-muted relative flex flex-col rounded-md bg-skin-button-muted/50 p-5 shadow-sm ring-1 transition hover:ring-skin-hue/50"
+	onclick={`window.open('${url}', '_blank')`}
+>
+	<div class="flex items-center justify-between space-x-[10px]">
+		<div class="flex items-center gap-2">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder size-4">
+				<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+			</svg>
+			<div class="flex items-center gap-[6px]">
+				{isActive ? (
+					<span class="flex items-center gap-[6px] text-lg">{name}</span>
+				) : (
+					<span>{name}</span>
+				)}
+			</div>
+		</div>
+
+		{github && (
+			<a href={github} title="Ver en GitHub" target="_blank" rel="noopener" class="opacity-75 transition-opacity duration-100 hover:opacity-100" onclick="event.stopPropagation()">
+				<Git />
+			</a>
+		)}
+	</div>
+
+	<p class="py-3 text-sm text-skin-base">{description}</p>
+	<ul class="mt-1 text-sm text-skin-muted">
+		{highlights.map((highlight) => {
+			return <li>{highlight}</li>;
+		})}
+	</ul>
+</div>
+
+<style>
+	ul {
+		@apply ml-4 list-disc space-y-1;
+		li {
+			@apply text-skin-muted;
+		}
+	}
+</style>

@@ -21,6 +21,7 @@ interface Basics {
   phone: string;
   url: string;
   summary: string;
+  theme: string;
   location: Location;
   profiles: Array<Profiles>;
 }
@@ -47,6 +48,11 @@ interface Work {
   endDate: DateStr | null;
   summary: string;
   highlights: Highlight;
+  location: string;
+  location_type: string;
+  responsibilities: string[];
+  achievements: string[];
+  skills: string[];
 }
 
 type DateStr = `${string}-${string}-${string}`;
@@ -65,6 +71,7 @@ interface Skills {
   name: string;
   level: string;
   keywords: Array<string>;
+  category: string;
 }
 
 interface Awards {
@@ -130,6 +137,7 @@ interface Projects {
   highlights: Highlight;
   url: string;
   github?: string;
+  category?: string;
 }
 
 interface Interests {

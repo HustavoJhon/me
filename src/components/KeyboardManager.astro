@@ -64,8 +64,8 @@ const profilesInfo = profiles.map(({ network, url }) => {
 	</div>
 </footer>
 
-<div class="footer-button no-print">
-	<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-command" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#777" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<div class="footer-button kb-footer-button no-print">
+	<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-command" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 		<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 		<path d="M7 9a2 2 0 1 1 2 -2v10a2 2 0 1 1 -2 -2h10a2 2 0 1 1 -2 2v-10a2 2 0 1 1 2 2h-10"></path>
 	</svg>
@@ -121,7 +121,7 @@ const profilesInfo = profiles.map(({ network, url }) => {
 	const footerButtons = document.querySelectorAll(".footer-button");
 	footerButtons.forEach((button) => {
 		button.addEventListener("click", () => {
-			var event = new KeyboardEvent("keydown", {
+			const event = new KeyboardEvent("keydown", {
 				key: "K",
 				code: "KeyK",
 				keyCode: 75,
@@ -147,7 +147,7 @@ const profilesInfo = profiles.map(({ network, url }) => {
 	}
 
 	@media (min-width: 601px) {
-		.footer-button {
+		.kb-footer-button {
 			display: none;
 		}
 	}
@@ -157,7 +157,7 @@ const profilesInfo = profiles.map(({ network, url }) => {
 			display: none;
 		}
 
-		.footer-button {
+		.kb-footer-button {
 			background: #fff;
 			position: fixed;
 			border: 1px solid #eee;
