@@ -25,14 +25,14 @@ const { image, summary, url, theme } = basics;
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={summary} />
-		<meta property="og:image" content="" />
+		<meta property="og:image" content={`${url}${image}`} />
 
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta property="twitter:domain" content={url.split("//")[1] ?? ""} />
 		<meta property="twitter:url" content={url} />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={summary} />
-		<meta name="twitter:image" content="" />
+		<meta name="twitter:image" content={`${url}${image}`} />
 
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Itim" />
 
