@@ -80,7 +80,7 @@ const SKILLS_ICONS: Record<string, any> = {
                     <ul class="text-skin-muted [&>li]:ml-4 flex list-disc flex-col gap-2">
                       {Array.isArray(summary) ? (
                         summary.map(item => (
-                          {item}
+                          <li>{item}</li>
                         ))
                       ) : (
                         <li>{summary}</li>
