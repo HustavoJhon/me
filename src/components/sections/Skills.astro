@@ -18,6 +18,17 @@ import Kotlin from "@/icons/kotlin.astro";
 import Flutter from "@/icons/flutter.astro";
 import Figma from "@/icons/Figma.astro";
 import Gitlab from "@/icons/Gitlab.astro";
+import CSharp from "@/icons/csharp.astro";
+import DotNet from "@/icons/dotnet.astro";
+import Laravel from "@/icons/laravel.astro";
+import Vue from "@/icons/vue.astro";
+import Java from "@/icons/java.astro";
+import Python from "@/icons/python.astro";
+import Go from "@/icons/go.astro";
+import Docker from "@/icons/docker.astro";
+import AstroIcon from "@/icons/astro.astro";
+import Shell from "@/icons/bash.astro";
+import Linux from "@/icons/linux.astro";
 
 const SKILLS_ICONS: Record<string, any> = {
 	HTML,
@@ -37,22 +48,47 @@ const SKILLS_ICONS: Record<string, any> = {
 	Flutter,
 	Figma,
 	Gitlab,
+	"C#": CSharp,
+	".NET": DotNet,
+	Laravel,
+	Vue,
+	Java,
+	Python,
+	Go,
+	Docker,
+	Astro: AstroIcon,
+	Shell,
+	Linux,
 };
 ---
 
 <Section className={Astro.props.className} title="Skills">
-	<ul class="[&>li>svg]:text-skin-hue inline-flex flex-wrap gap-6 [&>li>svg]:size-5 [&>li]:text-sm">
+	<div class="flex flex-col gap-1">
 		{
-			skills.map(({ name }) => {
-				const iconName = name === "Next.js" ? "Next" : name;
-				const Icon = SKILLS_ICONS[iconName];
-
+			["Lenguajes", "Backend", "Frontend", "DevOps", "Herramientas"].map(category => {
+				const filtered = skills.filter(s => s.category === category);
+				if (filtered.length === 0) return null;
 				return (
-					<li class="border-skin-hue/20s bg-skin-button-accent/20s borders border-solids flex items-center gap-1 rounded-md px-2 py-0.5 text-xs text-skin-muted print:border-none print:bg-transparent print:p-0 print:text-zinc-800">
-						{Icon && <Icon />} <span>{name}</span>
-					</li>
+					<div>
+						<div class="flex items-center gap-2 py-1 text-sm text-skin-muted">
+							<svg class="size-3 shrink-0 rotate-90" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+							<span class="font-medium">{category}</span>
+							<span class="text-xs text-skin-muted">({filtered.length})</span>
+						</div>
+						<ul class="[&>li>svg]:text-skin-hue mt-1 flex flex-wrap gap-1.5 pl-5 [&>li>svg]:size-4 [&>li]:text-sm">
+							{filtered.map(({ name }) => {
+								const iconName = name === "Next.js" ? "Next" : name;
+								const Icon = SKILLS_ICONS[iconName];
+								return (
+									<li class="bg-skin-button-accent/20 border-skin-hue/20 text-skin-hue flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs print:border-none print:bg-transparent print:p-0 print:text-zinc-800">
+										{Icon && <Icon />} <span>{name}</span>
+									</li>
+								);
+							})}
+						</ul>
+					</div>
 				);
 			})
 		}
-	</ul>
+	</div>
 </Section>
