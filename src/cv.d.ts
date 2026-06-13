@@ -71,6 +71,7 @@ interface Skills {
   name: string;
   level: string;
   keywords: Array<string>;
+  category: string;
 }
 
 interface Awards {
@@ -136,6 +137,7 @@ interface Projects {
   highlights: Highlight;
   url: string;
   github?: string;
+  category?: string;
 }
 
 interface Interests {

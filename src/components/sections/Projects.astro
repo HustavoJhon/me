@@ -1,88 +1,123 @@
 ---
-import Git from "@/icons/git.astro";
-import Arrow from "@/icons/Arrow.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
 import Section from "../Section.astro";
 
 import { projects } from "@cv";
+
+const limit = Astro.props.limit ?? 2;
+const showAll = Astro.props.showAll ?? false;
+const displayed = showAll ? projects : projects.slice(0, limit);
+
+const categoryOrder = ["Full Stack", "Frontend", "Entorno", "Aprendizaje", "Académico"];
+
+function groupByCategory<T extends { category?: string }>(items: T[]): Map<string, T[]> {
+	const map = new Map<string, T[]>();
+	for (const item of items) {
+		const cat = item.category ?? "Otros";
+		if (!map.has(cat)) map.set(cat, []);
+		map.get(cat)!.push(item);
+	}
+	return map;
+}
+
+function sortedGroups<T extends { category?: string }>(items: T[]): [string, T[]][] {
+	const grouped = groupByCategory(items);
+	const entries = Array.from(grouped.entries());
+	entries.sort((a, b) => {
+		const ai = categoryOrder.indexOf(a[0]);
+		const bi = categoryOrder.indexOf(b[0]);
+		return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+	});
+	return entries;
+}
+
+const categoryGroups = showAll ? sortedGroups(displayed) : null;
+const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 ---
 
-<Section className={Astro.props.className} title="Projects">
-	<div class="grid grid-cols-1 gap-3 md:grid-cols-2 print:flex print:flex-col">
-		{
-			projects.map(({ url, description, highlights, name, isActive, github }) => {
-				return (
-					<div role="contentinfo" class="grid-span-1 ring-skin-muted relative flex flex-col rounded-md bg-skin-button-muted/50 p-5 shadow-sm ring-1">
-						<div class="flex items-center justify-between space-x-[10px]">
-							<div class="flex items-center gap-2">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder size-4">
-									<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
-								</svg>
-								<div class="flex items-center gap-[6px]">
-									{isActive ? (
-										<a class="hover:text-skin-hue group flex items-center gap-[6px] text-lg decoration-dotted underline-offset-[5px] hover:underline" href={url} title={`Ver ${name}`} target="_blank">
-											{name}
-											<span class="text-skin-hue transition ease-linear group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-												<Arrow />
-											</span>
-										</a>
-									) : (
-										<span>{name}</span>
-									)}
-								</div>
+<Section className={Astro.props.className}>
+	{
+		!showAll ? (
+			<a href="/projects" class="group relative flex w-full items-center gap-2 pb-4 text-3xl print:gap-1 print:pb-0 print:text-xl text-skin-base no-underline transition hover:text-skin-hue">
+				Projects
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-6 transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+			</a>
+		) : (
+			<>
+				<h3 class="relative flex w-full items-center gap-3 pb-4 text-3xl print:gap-1 print:pb-0 print:text-xl">Projects</h3>
+
+				<div id="project-filter" class="no-print mb-6 flex flex-wrap gap-2">
+					<button data-filter="all" class="filter-btn rounded-full border border-skin-muted/30 px-4 py-1.5 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue active">Todos</button>
+					{allCategories.map((cat) => (
+						<button data-filter={cat} class="filter-btn rounded-full border border-skin-muted/30 px-4 py-1.5 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue">{cat}</button>
+					))}
+				</div>
+
+				<div id="project-groups">
+					{categoryGroups!.map(([category, items]) => (
+						<div data-category={category} class="mb-8">
+							<h4 class="mb-3 flex items-center gap-2 text-lg font-semibold text-skin-base">
+								<span class="text-skin-hue">{category}</span>
+								<span class="h-px flex-1 bg-skin-muted/30"></span>
+							</h4>
+							<div class="grid grid-cols-1 gap-3 md:grid-cols-2 print:flex print:flex-col">
+								{items.map((item) => (
+									<ProjectCard {...item} />
+								))}
 							</div>
-
-							{github && (
-								<a href={github} title="View slug repository on GitHub" target="_blank" rel="noopener" class="opacity-75 transition-opacity duration-100 hover:opacity-100">
-									<Git />
-								</a>
-							)}
 						</div>
-
-						<p class="py-3 text-sm text-skin-base">{description}</p>
-						<ul class="mt-1 text-sm text-skin-muted">
-							{highlights.map((highlight) => {
-								return <li>{highlight}</li>;
-							})}
-						</ul>
-					</div>
-				);
-			})
-		}
-	</div>
+					))}
+				</div>
+			</>
+		)
+	}
+	{
+		!showAll && (
+			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 print:flex print:flex-col">
+				{displayed.map((item) => (
+					<ProjectCard {...item} />
+				))}
+			</div>
+		)
+	}
+	{!showAll && projects.length > limit && (
+		<a href="/projects" class="mt-2 inline-flex items-center gap-1 text-sm text-skin-muted transition hover:text-skin-hue">
+			Ver todos los proyectos ({projects.length})
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+		</a>
+	)}
 </Section>
 
+<script>
+	const filterBtns = document.querySelectorAll("#project-filter .filter-btn");
+	const groups = document.querySelectorAll("#project-groups [data-category]");
+
+	function applyFilter(category: string) {
+		filterBtns.forEach((btn) => {
+			const isActive = btn.getAttribute("data-filter") === category;
+			btn.classList.toggle("active", isActive);
+		});
+		groups.forEach((group) => {
+			const match = category === "all" || group.getAttribute("data-category") === category;
+			group.classList.toggle("hidden", !match);
+		});
+	}
+
+	filterBtns.forEach((btn) => {
+		btn.addEventListener("click", () => {
+			const cat = btn.getAttribute("data-filter") ?? "all";
+			applyFilter(cat);
+		});
+	});
+
+	applyFilter("all");
+</script>
+
 <style>
-	ul {
-		@apply ml-4 list-disc space-y-1;
-		li {
-			@apply text-skin-muted;
-		}
+	.active {
+		@apply border-skin-hue bg-skin-hue/10 text-skin-hue !important;
 	}
-
-	footer {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 4px;
-		font-size: 0.6rem;
-	}
-
-	footer span {
-		border-radius: 6px;
-		background: #eee;
-		color: #444;
-		font-size: 0.6rem;
-		font-weight: 500;
-		padding: 0.2rem 0.6rem;
-	}
-	@keyframes flicker {
-		0% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0.25;
-		}
-		100% {
-			opacity: 1;
-		}
+	.hidden {
+		display: none !important;
 	}
 </style>
