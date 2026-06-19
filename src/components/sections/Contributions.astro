@@ -1,0 +1,129 @@
+---
+import Section from "../Section.astro";
+
+interface Contribution {
+  date: string;
+  level: number;
+}
+
+const { className } = Astro.props;
+const CONTRIBUTIONS_URL = "https://github.com/users/HustavoJhon/contributions";
+
+async function getContributions(): Promise<Contribution[]> {
+  try {
+    const res = await fetch(CONTRIBUTIONS_URL);
+    const html = await res.text();
+    const contributions: Contribution[] = [];
+    const regex = /data-date="([^"]*)"[^>]*data-level="([^"]*)"/g;
+    let match;
+    while ((match = regex.exec(html)) !== null) {
+      contributions.push({ date: match[1], level: parseInt(match[2]) });
+    }
+    return contributions;
+  } catch {
+    return [];
+  }
+}
+
+function getWeekday(dateStr: string): number {
+  return new Date(dateStr + "T12:00:00").getDay();
+}
+
+const all = await getContributions();
+
+const weeks: Contribution[][] = [];
+let week: Contribution[] = [];
+const firstSunday = all.findIndex((c) => getWeekday(c.date) === 0);
+for (let i = 0; i < all.length; i++) {
+  if (i > firstSunday && getWeekday(all[i].date) === 0) {
+    weeks.push(week);
+    week = [];
+  }
+  week.push(all[i]);
+}
+if (week.length > 0) weeks.push(week);
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthPositions: { label: string; col: number }[] = [];
+let prevMonth = -1;
+weeks.forEach((w, i) => {
+  if (w.length === 0) return;
+  const d = new Date(w[0].date + "T12:00:00");
+  if (d.getMonth() !== prevMonth) {
+    monthPositions.push({ label: monthNames[d.getMonth()], col: i });
+    prevMonth = d.getMonth();
+  }
+});
+
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+---
+
+<Section title="Contributions" className={className}>
+  <div class="overflow-x-auto">
+    <table class="border-separate" style="border-spacing: 3px">
+      <thead>
+        <tr style="height: 13px">
+          <td style="width: 28px"></td>
+          {monthPositions.map((m, i) => {
+            const next = monthPositions[i + 1];
+            const colspan = next ? next.col - m.col : weeks.length - m.col;
+            return (
+              <td colspan={colspan} class="text-xs text-skin-muted">
+                {m.label}
+              </td>
+            );
+          })}
+        </tr>
+      </thead>
+      <tbody>
+        {[0, 1, 2, 3, 4, 5, 6].map((dayIdx) => (
+          <tr style="height: 10px">
+            <td class="text-[10px] text-skin-muted pr-1 leading-none align-middle">{days[dayIdx]}</td>
+            {weeks.map((w) => {
+              const c = w.find((c) => getWeekday(c.date) === dayIdx);
+              return c ? (
+                <td
+                  class="w-[10px] h-[10px] rounded-sm"
+                  style={{
+                    backgroundColor: `var(--lvl-${c.level})`,
+                  }}
+                  title={`${c.date}: ${c.level > 0 ? c.level + " contribution(s)" : "No contributions"}`}
+                />
+              ) : (
+                <td class="w-[10px] h-[10px]" />
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <div class="flex items-center justify-end gap-1 text-xs text-skin-muted mt-2">
+    <span>Less</span>
+    {[0, 1, 2, 3, 4].map((lvl) => (
+      <span
+        class="inline-block w-[10px] h-[10px] rounded-sm"
+        style={{ backgroundColor: `var(--lvl-${lvl})` }}
+      />
+    ))}
+    <span>More</span>
+  </div>
+</Section>
+
+<style define:var={["--lvl-0", "--lvl-1", "--lvl-2", "--lvl-3", "--lvl-4"]}>
+  :host,
+  :root {
+    --lvl-0: #ebedf0;
+    --lvl-1: #9be9a8;
+    --lvl-2: #40c463;
+    --lvl-3: #30a14e;
+    --lvl-4: #216e39;
+  }
+  :global(.dark) {
+    --lvl-0: #161b22;
+    --lvl-1: #0e4429;
+    --lvl-2: #006d32;
+    --lvl-3: #26a641;
+    --lvl-4: #39d353;
+  }
+</style>
