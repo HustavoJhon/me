@@ -102,22 +102,88 @@
       "url": "https://www.linkedin.com/posts/hustavojhon_me-alegra-contaros-que-he-obtenido-un-nuevo-activity-7249443391430692866-BYOY?utm_source=share&utm_medium=member_desktop"
     },
     {
-      "name": "Curso de Python",
+      "name": "Fundamentos de Python",
       "date": "2024-06-15",
       "issuer": "Platzi",
-      "url": "/certificates/platzi-python.pdf"
+      "url": "/certificates/diploma-python-fundamentos.pdf"
     },
     {
-      "name": "Curso de JavaScript",
-      "date": "2024-08-20",
+      "name": "Python: Ciencia de la Computación",
+      "date": "2024-07-10",
       "issuer": "Platzi",
-      "url": "/certificates/platzi-javascript.pdf"
+      "url": "/certificates/diploma-python-cs.pdf"
     },
     {
-      "name": "Curso de Git y GitHub",
-      "date": "2024-09-10",
+      "name": "Python Básico",
+      "date": "2024-05-20",
       "issuer": "Platzi",
-      "url": "/certificates/platzi-git-github.pdf"
+      "url": "/certificates/diploma-python-basico.pdf"
+    },
+    {
+      "name": "C#",
+      "date": "2024-08-15",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-csharp.pdf"
+    },
+    {
+      "name": "C#: Programación Orientada a Objetos",
+      "date": "2024-09-01",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-c-sharp-poo.pdf"
+    },
+    {
+      "name": "Clean Code en C#",
+      "date": "2024-09-20",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-clean-code-csharp.pdf"
+    },
+    {
+      "name": "SOLID con C# y .NET",
+      "date": "2024-10-15",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-solid-csharp-net.pdf"
+    },
+    {
+      "name": "Fundamentos de .NET",
+      "date": "2024-08-01",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-fundamentos-net.pdf"
+    },
+    {
+      "name": "LINQ",
+      "date": "2024-11-01",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-linq.pdf"
+    },
+    {
+      "name": "Dart",
+      "date": "2024-12-01",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-dart.pdf"
+    },
+    {
+      "name": "Git y GitHub",
+      "date": "2024-07-15",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-gitgithub.pdf"
+    },
+    {
+      "name": "Prework: Windows",
+      "date": "2024-04-10",
+      "issuer": "Platzi",
+      "url": "/certificates/diploma-prework-windows.pdf"
+    },
+    {
+      "name": "English Level 1",
+      "date": "2024-03-15",
+      "issuer": "ICPNA",
+      "url": "/certificates/certificate-level-1.pdf"
+    },
+    {
+      "name": "Excel Avanzado",
+      "date": "2023-11-20",
+      "issuer": "Instituto",
+      "url": "/certificates/020%20JHON%20GUSTAVO%20CCARITA%20VELASQUEZ.pdf"
     }
   ],
   "skills": [
