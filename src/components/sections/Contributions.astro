@@ -1,129 +1,331 @@
 ---
 import Section from "../Section.astro";
 
-interface Contribution {
+const { className } = Astro.props;
+
+interface Cell {
   date: string;
   level: number;
+  ix: number;
 }
 
-const { className } = Astro.props;
-const CONTRIBUTIONS_URL = "https://github.com/users/HustavoJhon/contributions";
+interface YearData {
+  cells: Cell[];
+  total: string;
+  numWeeks: number;
+}
 
-async function getContributions(): Promise<Contribution[]> {
+function parseContributions(html: string): { cells: Cell[]; total: string } {
+  const totalMatch = html.match(/<h2[^>]*>[\s]*(\d+)[\s]*\n?contributions/);
+  const total = totalMatch ? totalMatch[1] : "";
+  const cells: Cell[] = [];
+  const regex = /data-ix="(\d+)"[^>]*data-date="([^"]*)"[^>]*data-level="(\d+)"/g;
+  let match;
+  while ((match = regex.exec(html)) !== null) {
+    cells.push({ ix: parseInt(match[1]), date: match[2], level: parseInt(match[3]) });
+  }
+  return { cells, total };
+}
+
+async function fetchYear(year: number): Promise<YearData | null> {
   try {
-    const res = await fetch(CONTRIBUTIONS_URL);
+    const url = `https://github.com/users/HustavoJhon/contributions?from=${year}-01-01&to=${year}-12-31`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
     const html = await res.text();
-    const contributions: Contribution[] = [];
-    const regex = /data-date="([^"]*)"[^>]*data-level="([^"]*)"/g;
-    let match;
-    while ((match = regex.exec(html)) !== null) {
-      contributions.push({ date: match[1], level: parseInt(match[2]) });
-    }
-    return contributions;
+    const { cells, total } = parseContributions(html);
+    if (cells.length === 0) return null;
+    const maxIx = cells.reduce((m, c) => Math.max(m, c.ix), 0);
+    return { cells, total, numWeeks: maxIx + 1 };
   } catch {
-    return [];
+    return null;
   }
 }
 
-function getWeekday(dateStr: string): number {
-  return new Date(dateStr + "T12:00:00").getDay();
+const yearsList = [2026, 2025, 2024, 2023, 2022];
+const allYears = new Map<number, YearData>();
+
+for (const year of yearsList) {
+  const data = await fetchYear(year);
+  if (data) allYears.set(year, data);
 }
 
-const all = await getContributions();
-
-const weeks: Contribution[][] = [];
-let week: Contribution[] = [];
-const firstSunday = all.findIndex((c) => getWeekday(c.date) === 0);
-for (let i = 0; i < all.length; i++) {
-  if (i > firstSunday && getWeekday(all[i].date) === 0) {
-    weeks.push(week);
-    week = [];
-  }
-  week.push(all[i]);
-}
-if (week.length > 0) weeks.push(week);
+const currentYear = new Date().getFullYear();
+const defaultYear = allYears.has(currentYear) ? currentYear : yearsList[0];
+const defaultData = allYears.get(defaultYear)!;
 
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const monthPositions: { label: string; col: number }[] = [];
-let prevMonth = -1;
-weeks.forEach((w, i) => {
-  if (w.length === 0) return;
-  const d = new Date(w[0].date + "T12:00:00");
-  if (d.getMonth() !== prevMonth) {
-    monthPositions.push({ label: monthNames[d.getMonth()], col: i });
-    prevMonth = d.getMonth();
-  }
-});
 
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+function computeMonthLabels(cells: Cell[], numWeeks: number): { label: string; count: number }[] {
+  const labels: { label: string; count: number }[] = [];
+  let currentMonth = -1;
+  let currentCount = 0;
+  for (let ix = 0; ix < numWeeks; ix++) {
+    const weekCells = cells.filter((c) => c.ix === ix);
+    if (weekCells.length === 0) continue;
+    const d = new Date(weekCells[0].date + "T12:00:00");
+    d.setDate(d.getDate() - d.getDay());
+    const m = d.getMonth();
+    if (m !== currentMonth) {
+      if (currentMonth !== -1) labels.push({ label: monthNames[currentMonth], count: currentCount });
+      currentMonth = m;
+      currentCount = 1;
+    } else {
+      currentCount++;
+    }
+  }
+  if (currentMonth !== -1) labels.push({ label: monthNames[currentMonth], count: currentCount });
+  return labels;
+}
+
+const serialized: Record<string, any> = {};
+for (const [year, data] of allYears) {
+  const cells: Record<string, { date: string; level: number }> = {};
+  for (const cell of data.cells) {
+    const di = new Date(cell.date + "T12:00:00").getDay();
+    cells[`${cell.ix}-${di}`] = { date: cell.date, level: cell.level };
+  }
+  serialized[year] = {
+    total: data.total,
+    numWeeks: data.numWeeks,
+    cells,
+    monthLabels: computeMonthLabels(data.cells, data.numWeeks),
+  };
+}
 ---
 
 <Section title="Contributions" className={className}>
-  <div class="overflow-x-auto">
-    <table class="border-separate" style="border-spacing: 3px">
-      <thead>
-        <tr style="height: 13px">
-          <td style="width: 28px"></td>
-          {monthPositions.map((m, i) => {
-            const next = monthPositions[i + 1];
-            const colspan = next ? next.col - m.col : weeks.length - m.col;
-            return (
-              <td colspan={colspan} class="text-xs text-skin-muted">
-                {m.label}
-              </td>
-            );
-          })}
-        </tr>
-      </thead>
-      <tbody>
-        {[0, 1, 2, 3, 4, 5, 6].map((dayIdx) => (
-          <tr style="height: 10px">
-            <td class="text-[10px] text-skin-muted pr-1 leading-none align-middle">{days[dayIdx]}</td>
-            {weeks.map((w) => {
-              const c = w.find((c) => getWeekday(c.date) === dayIdx);
-              return c ? (
-                <td
-                  class="w-[10px] h-[10px] rounded-sm"
-                  style={{
-                    backgroundColor: `var(--lvl-${c.level})`,
-                  }}
-                  title={`${c.date}: ${c.level > 0 ? c.level + " contribution(s)" : "No contributions"}`}
-                />
-              ) : (
-                <td class="w-[10px] h-[10px]" />
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-  <div class="flex items-center justify-end gap-1 text-xs text-skin-muted mt-2">
-    <span>Less</span>
-    {[0, 1, 2, 3, 4].map((lvl) => (
-      <span
-        class="inline-block w-[10px] h-[10px] rounded-sm"
-        style={{ backgroundColor: `var(--lvl-${lvl})` }}
-      />
-    ))}
-    <span>More</span>
+  <div class="js-yearly-contributions" data-default-year={defaultYear}>
+    <h2 class="text-base font-semibold mb-3" id="js-contribution-activity-description">
+      <span id="contributions-count">{defaultData.total}</span>
+      <span id="contributions-label"> contributions in <span id="contributions-year-label">{defaultYear}</span></span>
+    </h2>
+
+    <div class="flex flex-col md:flex-row gap-6">
+      <div class="flex-1 min-w-0">
+        <div class="border rounded-md py-2 graph-before-activity-overflow">
+          <div style="max-width: 100%; overflow-y: hidden; overflow-x: auto">
+            <div id="contributions-graph-container"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-2 text-xs">
+          <a
+            href="https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/managing-contribution-settings-on-your-profile/why-are-my-contributions-not-showing-up-on-my-profile"
+            class="text-skin-muted hover:text-skin-base"
+          >
+            Learn how we count contributions
+          </a>
+          <div class="flex items-center gap-0.5 text-skin-muted">
+            <span class="mr-0.5">Less</span>
+            {[0, 1, 2, 3, 4].map((lvl) => (
+              <div
+                id={`contribution-graph-legend-level-${lvl}`}
+                class={`ContributionCalendar-day rounded-sm contribution-lvl-${lvl}`}
+                style="width: 11px; height: 11px"
+              >
+                <span class="sr-only">
+                  {lvl === 0 ? "No" : lvl === 1 ? "Low" : lvl === 2 ? "Medium-low" : lvl === 3 ? "Medium-high" : "High"} contributions.
+                </span>
+              </div>
+            ))}
+            <span class="ml-0.5">More</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex md:flex-col gap-1 md:gap-1.5 flex-shrink-0 md:pt-1" id="contributions-year-list">
+        {yearsList.map((y) => {
+          const hasData = allYears.has(y);
+          const isCurrent = y === defaultYear;
+          return (
+            <button
+              data-year={y}
+              class={`year-btn text-xs px-2 py-1 rounded-md transition-colors text-center ${
+                !hasData ? "opacity-30 cursor-not-allowed" : ""
+              } ${
+                isCurrent
+                  ? "bg-[rgba(var(--color),0.15)] text-skin-base font-semibold"
+                  : "text-skin-muted hover:text-skin-base hover:bg-[rgba(var(--color),0.08)]"
+              }`}
+              {...(hasData ? {} : { disabled: true })}
+            >
+              {y}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   </div>
 </Section>
 
-<style define:var={["--lvl-0", "--lvl-1", "--lvl-2", "--lvl-3", "--lvl-4"]}>
-  :host,
-  :root {
-    --lvl-0: #ebedf0;
-    --lvl-1: #9be9a8;
-    --lvl-2: #40c463;
-    --lvl-3: #30a14e;
-    --lvl-4: #216e39;
+<script define:vars={{ yearData: serialized }}>
+
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr + "T12:00:00");
+    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   }
-  :global(.dark) {
-    --lvl-0: #161b22;
-    --lvl-1: #0e4429;
-    --lvl-2: #006d32;
-    --lvl-3: #26a641;
-    --lvl-4: #39d353;
+
+  function renderGraph(data) {
+    const container = document.getElementById("contributions-graph-container");
+    const cells = data.cells;
+    const numWeeks = data.numWeeks;
+    const monthLabels = data.monthLabels;
+
+    let html = `<table role="grid" aria-readonly="true" class="ContributionCalendar-grid" style="border-spacing: 4px; overflow: hidden; position: relative">
+      <caption class="sr-only">Contribution Graph</caption>
+      <thead>
+        <tr style="height: 15px">
+          <td style="width: 29px"><span class="sr-only">Day of Week</span></td>`;
+
+    for (const m of monthLabels) {
+      html += `<td class="ContributionCalendar-label" colspan="${m.count}" style="position: relative">
+        <span class="sr-only">${m.label}</span>
+        <span aria-hidden="true" style="position: absolute; top: 0; font-size: 11px">${m.label}</span>
+      </td>`;
+    }
+
+    html += `</tr></thead><tbody>`;
+
+    for (let dayIdx = 0; dayIdx < 7; dayIdx++) {
+      const showLabel = dayIdx === 1 || dayIdx === 3 || dayIdx === 5;
+      html += `<tr style="height: 11px">
+        <td class="ContributionCalendar-label" style="position: relative; width: 29px">
+          <span class="sr-only">${dayNames[dayIdx]}</span>
+          <span aria-hidden="true" style="clip-path: ${showLabel ? "None" : "Circle(0)"}; position: absolute; bottom: -4px; font-size: 11px">${dayNames[dayIdx]}</span>
+        </td>`;
+
+      for (let ix = 0; ix < numWeeks; ix++) {
+        const cellKey = `${ix}-${dayIdx}`;
+        const cell = cells[cellKey];
+        if (cell) {
+          const id = `contribution-day-component-${dayIdx}-${ix}`;
+          html += `<td id="${id}" tabindex="0" data-ix="${ix}" aria-selected="false" aria-describedby="contribution-graph-legend-level-${cell.level}" data-date="${cell.date}" data-level="${cell.level}" role="gridcell" data-view-component="true" class="ContributionCalendar-day contribution-lvl-${cell.level}"></td>
+          <tool-tip style="pointer-events: none;" for="${id}" popover="manual" data-direction="n" data-type="label" data-view-component="true" class="sr-only position-absolute">${
+            cell.level > 0
+              ? `${cell.level} contribution${cell.level !== 1 ? "s" : ""} on ${formatDate(cell.date)}`
+              : `No contributions on ${formatDate(cell.date)}.`
+          }</tool-tip>`;
+        } else {
+          html += `<td style="width: 11px; height: 11px"></td>`;
+        }
+      }
+      html += `</tr>`;
+    }
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+  }
+
+  function showYear(year) {
+    const data = yearData[year];
+    if (!data) return;
+
+    document.getElementById("contributions-count").textContent = data.total;
+    document.getElementById("contributions-year-label").textContent = year;
+    renderGraph(data);
+
+    document.querySelectorAll(".year-btn").forEach((btn) => {
+      const y = parseInt(btn.dataset.year);
+      const isCurrent = y === year;
+      btn.className = `year-btn text-xs px-2 py-1 rounded-md transition-colors text-center ${
+        isCurrent
+          ? "bg-[rgba(var(--color),0.15)] text-skin-base font-semibold"
+          : "text-skin-muted hover:text-skin-base hover:bg-[rgba(var(--color),0.08)]"
+      }`;
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const defaultYear = parseInt(
+      document.querySelector(".js-yearly-contributions").dataset.defaultYear
+    );
+    renderGraph(yearData[defaultYear]);
+
+    document.querySelectorAll(".year-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const year = parseInt(btn.dataset.year);
+        if (yearData[year]) showYear(year);
+      });
+    });
+  });
+</script>
+
+<style is:global>
+  .ContributionCalendar-grid {
+    table-layout: fixed;
+    width: max-content;
+  }
+
+  .ContributionCalendar-day {
+    width: 11px;
+    height: 11px;
+  }
+
+  .contribution-lvl-0 {
+    background-color: #ebedf0;
+  }
+  .contribution-lvl-1 {
+    background-color: rgba(var(--color), 0.15);
+  }
+  .contribution-lvl-2 {
+    background-color: rgba(var(--color), 0.35);
+  }
+  .contribution-lvl-3 {
+    background-color: rgba(var(--color), 0.55);
+  }
+  .contribution-lvl-4 {
+    background-color: rgba(var(--color), 0.8);
+  }
+  .dark .contribution-lvl-0 {
+    background-color: #161b22;
+  }
+  .dark .contribution-lvl-1 {
+    background-color: rgba(var(--color), 0.2);
+  }
+  .dark .contribution-lvl-2 {
+    background-color: rgba(var(--color), 0.4);
+  }
+  .dark .contribution-lvl-3 {
+    background-color: rgba(var(--color), 0.6);
+  }
+  .dark .contribution-lvl-4 {
+    background-color: rgba(var(--color), 0.9);
+  }
+
+  @media (max-width: 640px) {
+    .ContributionCalendar-grid {
+      border-spacing: 3px !important;
+    }
+    .ContributionCalendar-day {
+      width: 9px !important;
+      height: 9px !important;
+    }
+    td[style*="width: 11px"] {
+      width: 9px !important;
+      height: 9px !important;
+    }
+    .ContributionCalendar-label span[aria-hidden="true"] {
+      font-size: 9px !important;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .ContributionCalendar-grid {
+      border-spacing: 2px !important;
+    }
+    .ContributionCalendar-day {
+      width: 7px !important;
+      height: 7px !important;
+    }
+    td[style*="width: 11px"] {
+      width: 7px !important;
+      height: 7px !important;
+    }
+    .ContributionCalendar-label span[aria-hidden="true"] {
+      font-size: 8px !important;
+    }
   }
 </style>
