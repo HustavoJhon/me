@@ -1,0 +1,60 @@
+---
+import Section from "../Section.astro";
+import { certificates } from "@cv";
+---
+
+<Section className={Astro.props.className} title="Certificates">
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    {certificates.map(({ name, date, issuer, url }) => {
+      const year = new Date(date).getFullYear();
+      return (
+        <a
+          href={url}
+          target="_blank"
+          class="group flex items-start gap-3 rounded-lg border border-transparent p-3 transition-colors hover:border-[rgba(var(--color),0.2)] hover:bg-[rgba(var(--color),0.04)]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="mt-0.5 h-6 w-6 flex-shrink-0 text-skin-muted"
+          >
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+          <div class="min-w-0 flex-1">
+            <h4 class="text-sm font-medium text-skin-base group-hover:text-skin-hue transition-colors truncate">
+              {name}
+            </h4>
+            <p class="text-xs text-skin-muted">{issuer}</p>
+            <time class="text-xs text-skin-muted">{year}</time>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="mt-1 flex-shrink-0 text-skin-muted opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            <path d="M7 7h10v10" />
+            <path d="M7 17 21 3" />
+          </svg>
+        </a>
+      );
+    })}
+  </div>
+</Section>

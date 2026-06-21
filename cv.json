@@ -97,9 +97,27 @@
   "certificates": [
     {
       "name": "Space App Challenge - Cusco",
-      "date": "2024-10-5",
+      "date": "2024-10-05",
       "issuer": "Hackathon Cusco",
       "url": "https://www.linkedin.com/posts/hustavojhon_me-alegra-contaros-que-he-obtenido-un-nuevo-activity-7249443391430692866-BYOY?utm_source=share&utm_medium=member_desktop"
+    },
+    {
+      "name": "Curso de Python",
+      "date": "2024-06-15",
+      "issuer": "Platzi",
+      "url": "/certificates/platzi-python.pdf"
+    },
+    {
+      "name": "Curso de JavaScript",
+      "date": "2024-08-20",
+      "issuer": "Platzi",
+      "url": "/certificates/platzi-javascript.pdf"
+    },
+    {
+      "name": "Curso de Git y GitHub",
+      "date": "2024-09-10",
+      "issuer": "Platzi",
+      "url": "/certificates/platzi-git-github.pdf"
     }
   ],
   "skills": [
