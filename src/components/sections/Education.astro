@@ -144,7 +144,7 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 
 <style>
 	.certs-track {
-		@apply -mx-1 flex snap-x snap-mandatory scroll-px-1 gap-2 overflow-x-auto scroll-smooth px-1 pb-3 pt-1 outline-none motion-reduce:scroll-auto;
+		@apply relative -mx-1 flex snap-x snap-mandatory scroll-px-1 gap-2 overflow-x-auto scroll-smooth px-1 pb-3 pt-1 outline-none motion-reduce:scroll-auto;
 		scrollbar-width: thin;
 		scrollbar-color: rgb(var(--muted)) transparent;
 		overscroll-behavior-x: contain;
