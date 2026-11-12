@@ -2,38 +2,53 @@
 import { basics } from "@cv";
 import Vengeance from "@/layouts/Vengeance.astro";
 import "@/styles/global.css";
+import { absoluteUrl } from "@/lib/site";
 
 interface Props {
 	title: string;
+	/** Page-specific summary for search results and link previews; defaults to the CV summary. */
+	description?: string;
 }
 
-const { title } = Astro.props;
+const { name, image, summary, theme } = basics;
+const { title, description = summary } = Astro.props;
 
-const { image, summary, url, theme } = basics;
+// Absolute URLs for crawlers and link previews, based on the production URL in cv.json.
+const canonicalUrl = absoluteUrl(Astro.url.pathname);
+const imageUrl = absoluteUrl(image);
+const imageAlt = `Avatar de ${name}`;
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{title}</title>
-		<meta name="description" content={summary} />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={description} />
+		<meta name="author" content={name} />
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="sitemap" href="/sitemap.xml" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="preload" as="image" href={image} />
 
-		<meta property="og:url" content={url} />
 		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="es_PE" />
+		<meta property="og:site_name" content={name} />
+		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:title" content={title} />
-		<meta property="og:description" content={summary} />
-		<meta property="og:image" content={`${url}${image}`} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={imageUrl} />
+		<meta property="og:image:width" content="512" />
+		<meta property="og:image:height" content="512" />
+		<meta property="og:image:alt" content={imageAlt} />
 
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta property="twitter:domain" content={url.split("//")[1] ?? ""} />
-		<meta property="twitter:url" content={url} />
+		<!-- Square avatar: the "summary" card shows it uncropped. -->
+		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={summary} />
-		<meta name="twitter:image" content={`${url}${image}`} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageUrl} />
+		<meta name="twitter:image:alt" content={imageAlt} />
 
 		<link rel="stylesheet" href="/themes/themes.css" />
 		<Vengeance />
