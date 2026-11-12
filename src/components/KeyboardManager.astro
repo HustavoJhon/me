@@ -1,5 +1,4 @@
 ---
-import "hotkeypad/reset.css";
 import "hotkeypad/index.css";
 import { type SocialIcon } from "@/types";
 import { basics } from "@cv";
@@ -133,12 +132,14 @@ const profilesInfo = profiles.map(({ network, url }) => {
 </script>
 
 <style>
+	@reference "../styles/global.css";
+
 	.kb-hint {
 		@apply mx-auto max-w-7xl px-5 pb-10 text-center text-xs;
 	}
 
 	.kb-hint kbd {
-		@apply rounded border border-skin-muted bg-skin-button-muted px-1.5 py-0.5 font-mono text-[0.7rem] text-skin-base;
+		@apply rounded-sm border border-skin-muted bg-skin-button-muted px-1.5 py-0.5 font-mono text-[0.7rem] text-skin-base;
 	}
 
 	.kb-fab {

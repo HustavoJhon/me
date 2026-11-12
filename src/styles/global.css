@@ -1,0 +1,41 @@
+/* Scan only src/, as the Tailwind 3 `content` glob did. */
+@import "tailwindcss" source("..");
+
+/*
+ * Same cascade as the Tailwind 3 build: preflight, then hotkeypad's global reset, both in the
+ * `base` layer so they compete by specificity as before and never beat utilities.
+ * (Left unlayered, the reset's `all: unset` would override every Tailwind utility.)
+ */
+@import "./tailwind3-compat.css" layer(base);
+@import "hotkeypad/reset.css" layer(base);
+
+/* Dark mode follows the `.dark` class set on <html> by the theme script in Layout.astro. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tailwind 3 font stacks (Tailwind 4.3 changed the default sans stack). */
+@theme {
+	--font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/*
+ * Theme colors come from the RGB triplets defined per [data-theme] in public/themes/themes.css.
+ * `inline` keeps the var() lookups at the element, so per-theme overrides still apply.
+ * Namespaced keys (--text-color-*, --background-color-*, --ring-color-*) preserve the
+ * per-utility mapping of the former Tailwind 3 config, e.g. `text-skin-muted` vs `ring-skin-muted`.
+ */
+@theme inline {
+	--color-skin-hue: rgb(var(--color));
+	--color-skin-muted: rgb(var(--muted));
+
+	--text-color-skin-base: rgb(var(--color-text-base));
+	--text-color-skin-muted: rgb(var(--color-text-muted));
+	--text-color-skin-inverted: rgb(var(--color-text-inverted));
+
+	--background-color-skin-fill: rgb(var(--color-fill));
+	--background-color-skin-button-accent: rgb(var(--color-button-accent));
+	--background-color-skin-button-accent-hover: rgb(var(--color-button-accent-hover));
+	--background-color-skin-button-muted: rgb(var(--color-button-muted));
+
+	--ring-color-skin-fill: rgb(var(--color-fill));
+}

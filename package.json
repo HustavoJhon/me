@@ -16,17 +16,17 @@
     "contributions:update": "node scripts/update-contributions.ts"
   },
   "dependencies": {
-    "@astrojs/tailwind": "^6.0.2",
+    "@tailwindcss/vite": "^4.3.5",
     "astro": "5.18.2",
     "hotkeypad": "1.0.2",
-    "tailwindcss": "^3.4.4"
+    "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
     "@types/node": "^24.19.2",
-    "prettier": "^3.3.2",
+    "prettier": "^3.10.1",
     "prettier-plugin-astro": "^0.14.0",
-    "prettier-plugin-tailwindcss": "^0.6.14",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "5.9.3"
   }
 }

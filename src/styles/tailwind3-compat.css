@@ -1,0 +1,11 @@
+/*
+ * Tailwind 3 preflight default kept for visual parity: borders without an explicit color
+ * used gray-200. (Elements touched by hotkeypad's reset get `currentcolor` from it instead.)
+ */
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+	border-color: #e5e7eb;
+}

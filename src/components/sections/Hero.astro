@@ -120,6 +120,8 @@ const printInfo = [email, phone, linkedInfo?.url].filter(Boolean).join(" • ");
 </script>
 
 <style>
+	@reference "../../styles/global.css";
+
 	.contact-link {
 		@apply inline-flex size-10 items-center justify-center rounded-md text-skin-hue transition-colors duration-200 hover:bg-skin-button-accent hover:text-skin-inverted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-skin-hue sm:size-9;
 	}
@@ -133,7 +135,7 @@ const printInfo = [email, phone, linkedInfo?.url].filter(Boolean).join(" • ");
 	}
 
 	.copy-toast {
-		@apply pointer-events-none absolute left-full top-1/2 z-10 ml-1 -translate-y-1/2 whitespace-nowrap rounded bg-skin-button-accent px-2.5 py-1 text-xs text-skin-inverted opacity-0 transition-opacity duration-200;
+		@apply pointer-events-none absolute left-full top-1/2 z-10 ml-1 -translate-y-1/2 whitespace-nowrap rounded-sm bg-skin-button-accent px-2.5 py-1 text-xs text-skin-inverted opacity-0 transition-opacity duration-200;
 	}
 
 	.copy-toast:empty {

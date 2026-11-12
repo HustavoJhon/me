@@ -289,6 +289,8 @@ const profileUrl = `https://github.com/${username}`;
 </script>
 
 <style>
+	@reference "../../styles/global.css";
+
 	.contrib {
 		--cell-min: 11px;
 		--cell-max: 15px;
@@ -372,7 +374,7 @@ const profileUrl = `https://github.com/${username}`;
 		grid-template-rows: repeat(7, auto);
 		grid-auto-flow: column;
 		row-gap: var(--gap);
-		@apply rounded outline-none;
+		@apply rounded-sm outline-hidden;
 	}
 
 	/* Keyboard focus: highlight the panel border plus the active day (an outline would cover month labels). */

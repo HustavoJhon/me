@@ -1,6 +1,7 @@
 ---
 import { basics } from "@cv";
 import Vengeance from "@/layouts/Vengeance.astro";
+import "@/styles/global.css";
 
 interface Props {
 	title: string;
@@ -85,107 +86,112 @@ const { image, summary, url, theme } = basics;
 		</div>
 		<slot />
 		<style is:global>
-			/* Entrance animation: screen only, opt-in via JS, skipped for reduced motion and print. */
-			@media screen and (prefers-reduced-motion: no-preference) {
-				.js [data-reveal] {
-					opacity: 0;
-					transform: translateY(1.5rem);
-					transition:
-						opacity 0.6s ease-out,
-						transform 0.6s ease-out;
+			@reference "../styles/global.css";
+
+			/* Element defaults in the base layer so Tailwind utilities on an element still win. */
+			@layer base {
+				/* Entrance animation: screen only, opt-in via JS, skipped for reduced motion and print. */
+				@media screen and (prefers-reduced-motion: no-preference) {
+					.js [data-reveal] {
+						opacity: 0;
+						transform: translateY(1.5rem);
+						transition:
+							opacity 0.6s ease-out,
+							transform 0.6s ease-out;
+					}
+					.js [data-reveal].is-visible {
+						opacity: 1;
+						transform: none;
+					}
+					.js [data-reveal]:nth-child(2) {
+						transition-delay: 0.1s;
+					}
+					.js [data-reveal]:nth-child(3) {
+						transition-delay: 0.2s;
+					}
+					.js [data-reveal]:nth-child(4) {
+						transition-delay: 0.3s;
+					}
+					.js [data-reveal]:nth-child(5) {
+						transition-delay: 0.4s;
+					}
 				}
-				.js [data-reveal].is-visible {
-					opacity: 1;
-					transform: none;
+
+				body,
+				figure {
+					margin: 0;
+					padding: 0;
 				}
-				.js [data-reveal]:nth-child(2) {
-					transition-delay: 0.1s;
+
+				a {
+					text-decoration: none;
 				}
-				.js [data-reveal]:nth-child(3) {
-					transition-delay: 0.2s;
+
+				ul {
+					list-style: none;
+					margin: 0;
+					padding: 0;
 				}
-				.js [data-reveal]:nth-child(4) {
-					transition-delay: 0.3s;
+
+				*,
+				*::before,
+				*::after {
+					box-sizing: border-box;
 				}
-				.js [data-reveal]:nth-child(5) {
-					transition-delay: 0.4s;
+
+				h1,
+				h2,
+				h3,
+				h4 {
+					@apply text-skin-base;
+					margin: 0;
+					font-family:
+						system-ui,
+						-apple-system,
+						BlinkMacSystemFont,
+						"Segoe UI",
+						Roboto,
+						Oxygen,
+						Ubuntu,
+						Cantarell,
+						"Open Sans",
+						"Helvetica Neue",
+						sans-serif;
 				}
-			}
 
-			body,
-			figure {
-				margin: 0;
-				padding: 0;
-			}
-
-			a {
-				text-decoration: none;
-			}
-
-			ul {
-				list-style: none;
-				margin: 0;
-				padding: 0;
-			}
-
-			*,
-			*::before,
-			*::after {
-				box-sizing: border-box;
-			}
-
-			h1,
-			h2,
-			h3,
-			h4 {
-				@apply text-skin-base;
-				margin: 0;
-				font-family:
-					system-ui,
-					-apple-system,
-					BlinkMacSystemFont,
-					"Segoe UI",
-					Roboto,
-					Oxygen,
-					Ubuntu,
-					Cantarell,
-					"Open Sans",
-					"Helvetica Neue",
-					sans-serif;
-			}
-
-			p {
-				@apply text-sm text-skin-muted;
-				line-height: 1.5;
-				text-wrap: pretty;
-			}
-
-			.print {
-				display: none !important;
-			}
-
-			.dev * {
-				@apply border border-red-500/50 bg-red-500/5;
-			}
-			#hotkeypad [data-backdrop] {
-				@apply !bg-zinc-800 !opacity-80;
-			}
-
-			@media print {
-				.no-print {
-					display: none !important;
+				p {
+					@apply text-sm text-skin-muted;
+					line-height: 1.5;
+					text-wrap: pretty;
 				}
 
 				.print {
-					display: block !important;
-				}
-
-				astro-dev-toolbar {
 					display: none !important;
 				}
 
-				article {
-					break-inside: avoid;
+				.dev * {
+					@apply border border-red-500/50 bg-red-500/5;
+				}
+				#hotkeypad [data-backdrop] {
+					@apply bg-zinc-800! opacity-80!;
+				}
+
+				@media print {
+					.no-print {
+						display: none !important;
+					}
+
+					.print {
+						display: block !important;
+					}
+
+					astro-dev-toolbar {
+						display: none !important;
+					}
+
+					article {
+						break-inside: avoid;
+					}
 				}
 			}
 		</style>

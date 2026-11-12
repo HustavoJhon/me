@@ -143,8 +143,10 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 </script>
 
 <style>
+	@reference "../../styles/global.css";
+
 	.certs-track {
-		@apply relative -mx-1 flex snap-x snap-mandatory scroll-px-1 gap-2 overflow-x-auto scroll-smooth px-1 pb-3 pt-1 outline-none motion-reduce:scroll-auto;
+		@apply relative -mx-1 flex snap-x snap-mandatory scroll-px-1 gap-2 overflow-x-auto scroll-smooth px-1 pb-3 pt-1 outline-hidden motion-reduce:scroll-auto;
 		scrollbar-width: thin;
 		scrollbar-color: rgb(var(--muted)) transparent;
 		overscroll-behavior-x: contain;
@@ -159,7 +161,7 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 	}
 
 	.cert-card {
-		@apply flex h-full items-start gap-2.5 rounded-lg bg-skin-button-muted/50 p-3 ring-1 ring-skin-muted transition-colors hover:ring-skin-hue/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-skin-hue;
+		@apply flex h-full items-start gap-2.5 rounded-lg bg-skin-button-muted/50 p-3 ring-1 ring-skin-muted transition-colors hover:ring-skin-hue/60 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-skin-hue;
 	}
 
 	.cert-icon {
@@ -175,7 +177,7 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 	}
 
 	.cert-badge {
-		@apply ml-1 rounded border border-skin-hue/30 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-skin-hue;
+		@apply ml-1 rounded-sm border border-skin-hue/30 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-skin-hue;
 	}
 
 	.certs-nav {
