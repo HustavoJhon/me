@@ -17,18 +17,18 @@ const { name, label } = basics;
 ---
 
 <Layout title={`${name} Portafolio - ${label}`}>
-	<main class="relative grid max-w-7xl grid-cols-1 gap-12 p-8 max-sm:py-16 md:grid-cols-6 md:p-16 xl:gap-24 print:max-w-none print:grid-cols-1 print:gap-6">
-		<div class="min-w-0 space-y-6 md:col-span-2 print:col-span-1 print:grid print:grid-cols-2 print:gap-5 print:space-y-0">
+	<main class="relative mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-6 lg:gap-16 lg:px-12 xl:gap-24 xl:px-16 print:max-w-none print:grid-cols-1 print:gap-6 print:p-8">
+		<aside class="sidebar min-w-0 space-y-6 lg:col-span-2 print:col-span-1 print:grid print:grid-cols-2 print:gap-5 print:space-y-0">
 			<div data-reveal><Hero /></div>
 			<div data-reveal><About /></div>
 			<div data-reveal><ThemeSwitch /></div>
-		</div>
-		<div class="min-w-0 space-y-12 md:col-span-4 print:col-span-1 print:grid print:grid-cols-4 print:gap-2 print:space-y-0">
-			<div data-reveal><Experience className="print:col-span-3" /></div>
-			<div data-reveal><Projects className="print:hidden" /></div>
-			<div data-reveal><Skills className="print:hidden" /></div>
-			<div data-reveal><Education className="order-first" /></div>
-			<div data-reveal><Contributions className="print:hidden" /></div>
+		</aside>
+		<div class="min-w-0 space-y-16 lg:col-span-4 print:col-span-1 print:grid print:grid-cols-4 print:gap-4 print:space-y-0">
+			<div data-reveal class="print:col-span-3"><Experience /></div>
+			<div data-reveal class="print:hidden"><Projects /></div>
+			<div data-reveal class="print:hidden"><Skills /></div>
+			<div data-reveal class="print:order-first print:col-span-1"><Education /></div>
+			<div data-reveal class="print:hidden"><Contributions /></div>
 		</div>
 		<Tail />
 	</main>
@@ -41,8 +41,13 @@ const { name, label } = basics;
 		size: auto;
 		margin: 0mm;
 	}
-	main {
-		margin: auto;
-		width: 100%;
+
+	/* Keep the profile column in view on desktop, only when it fits the viewport height. */
+	@media (min-width: 1024px) and (min-height: 760px) {
+		.sidebar {
+			position: sticky;
+			top: 4rem;
+			align-self: start;
+		}
 	}
 </style>
