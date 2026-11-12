@@ -1,8 +1,41 @@
 ---
-const { className, title } = Astro.props;
+interface Props {
+	title?: string;
+	/** Turns the title into a link (e.g. to a dedicated page). */
+	titleHref?: string;
+	className?: string;
+	/** Use 1 when the section is the page's main heading. */
+	headingLevel?: 1 | 2;
+}
+
+const { className, title, titleHref, headingLevel = 2 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+const headingId = title
+	? `section-${title
+			.toLowerCase()
+			.normalize("NFD")
+			.replace(/[^a-z0-9]+/g, "-")
+			.replace(/^-|-$/g, "")}`
+	: undefined;
 ---
 
-<section class:list={["flex flex-col gap-4 print:gap-0", className]}>
-	{title && <h3 class="relative flex w-full items-center gap-3 pb-4 text-3xl print:gap-1 print:pb-0 print:text-xl">{title}</h3>}
+<section class:list={["flex flex-col gap-6 print:gap-1", className]} aria-labelledby={headingId}>
+	{
+		title && (
+			<Heading id={headingId} class:list={["leading-tight print:text-xl", headingLevel === 1 ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"]}>
+				{titleHref ? (
+					<a href={titleHref} class="group inline-flex items-center gap-2 transition-colors hover:text-skin-hue">
+						{title}
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transition-none sm:size-6 print:hidden" aria-hidden="true">
+							<path d="M5 12h14" />
+							<path d="m12 5 7 7-7 7" />
+						</svg>
+					</a>
+				) : (
+					title
+				)}
+			</Heading>
+		)
+	}
 	<slot />
 </section>

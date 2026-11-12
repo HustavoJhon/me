@@ -35,57 +35,56 @@ const categoryGroups = showAll ? sortedGroups(displayed) : null;
 const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 ---
 
-<Section className={Astro.props.className}>
+<Section className={Astro.props.className} title="Projects" titleHref={showAll ? undefined : "/projects"} headingLevel={showAll ? 1 : 2}>
 	{
-		!showAll ? (
-			<a href="/projects" class="group relative flex w-full items-center gap-2 pb-4 text-3xl print:gap-1 print:pb-0 print:text-xl text-skin-base no-underline transition hover:text-skin-hue">
-				Projects
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-6 transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-			</a>
-		) : (
+		showAll ? (
 			<>
-				<h3 class="relative flex w-full items-center gap-3 pb-4 text-3xl print:gap-1 print:pb-0 print:text-xl">Projects</h3>
-
-				<div id="project-filter" class="no-print mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar proyectos por categoría">
-					<button type="button" data-filter="all" aria-pressed="true" class="filter-btn inline-flex min-h-10 items-center rounded-full border border-skin-muted px-4 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-skin-hue">Todos</button>
+				<div id="project-filter" class="no-print flex flex-wrap gap-2" role="group" aria-label="Filtrar proyectos por categoría">
+					<button type="button" data-filter="all" aria-pressed="true" class="filter-btn">
+						Todos
+					</button>
 					{allCategories.map((cat) => (
-						<button type="button" data-filter={cat} aria-pressed="false" class="filter-btn inline-flex min-h-10 items-center rounded-full border border-skin-muted px-4 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-skin-hue">{cat}</button>
+						<button type="button" data-filter={cat} aria-pressed="false" class="filter-btn">
+							{cat}
+						</button>
 					))}
 				</div>
 
-				<div id="project-groups">
+				<div id="project-groups" class="flex flex-col gap-10">
 					{categoryGroups!.map(([category, items]) => (
-						<div data-category={category} class="mb-8">
-							<h4 class="mb-3 flex items-center gap-2 text-lg font-semibold text-skin-base">
-								<span class="text-skin-hue">{category}</span>
-								<span class="h-px flex-1 bg-skin-muted/30"></span>
-							</h4>
-							<div class="grid grid-cols-1 gap-3 md:grid-cols-2 print:flex print:flex-col">
+						<section data-category={category} aria-label={category}>
+							<h3 class="mb-4 flex items-center gap-3 text-lg font-semibold text-skin-hue">
+								{category}
+								<span class="h-px flex-1 bg-skin-muted" aria-hidden="true" />
+							</h3>
+							<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 print:flex print:flex-col">
 								{items.map((item) => (
-									<ProjectCard {...item} />
+									<ProjectCard {...item} headingLevel={4} />
 								))}
 							</div>
-						</div>
+						</section>
 					))}
 				</div>
 			</>
+		) : (
+			<>
+				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 print:flex print:flex-col">
+					{displayed.map((item) => (
+						<ProjectCard {...item} />
+					))}
+				</div>
+				{projects.length > limit && (
+					<a href="/projects" class="inline-flex w-fit items-center gap-1 text-sm text-skin-muted transition-colors hover:text-skin-hue">
+						Ver todos los proyectos ({projects.length})
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true">
+							<path d="M5 12h14" />
+							<path d="m12 5 7 7-7 7" />
+						</svg>
+					</a>
+				)}
+			</>
 		)
 	}
-	{
-		!showAll && (
-			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 print:flex print:flex-col">
-				{displayed.map((item) => (
-					<ProjectCard {...item} />
-				))}
-			</div>
-		)
-	}
-	{!showAll && projects.length > limit && (
-		<a href="/projects" class="mt-2 inline-flex items-center gap-1 text-sm text-skin-muted transition hover:text-skin-hue">
-			Ver todos los proyectos ({projects.length})
-			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-		</a>
-	)}
 </Section>
 
 <script>
@@ -114,6 +113,10 @@ const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 </script>
 
 <style>
+	.filter-btn {
+		@apply inline-flex min-h-10 items-center rounded-full border border-skin-muted px-4 text-sm text-skin-muted transition-colors hover:border-skin-hue hover:text-skin-hue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-skin-hue;
+	}
+
 	.filter-btn[aria-pressed="true"] {
 		@apply border-skin-hue bg-skin-hue/10 text-skin-hue;
 	}
