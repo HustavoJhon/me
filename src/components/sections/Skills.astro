@@ -1,94 +1,34 @@
 ---
 import Section from "../Section.astro";
-import HTML from "@/icons/html.astro";
-import CSS from "@/icons/css.astro";
-import JavaScript from "@/icons/javascript.astro";
-import TypeScript from "@/icons/type.astro";
-import React from "@/icons/react.astro";
-import Node from "@/icons/node.astro";
-import MySQL from "@/icons/sql.astro";
-import Git from "@/icons/git.astro";
-import GitHub from "@/icons/GitHub.astro";
-import Tailwind from "@/icons/tailwind.astro";
-import Next from "@/icons/next.astro";
+import SkillTag from "@/components/SkillTag.astro";
 import { skills } from "@cv";
-import Swift from "@/icons/swift.astro";
-import SwiftUI from "@/icons/swiftui.astro";
-import Kotlin from "@/icons/kotlin.astro";
-import Flutter from "@/icons/flutter.astro";
-import Figma from "@/icons/Figma.astro";
-import Gitlab from "@/icons/Gitlab.astro";
-import CSharp from "@/icons/csharp.astro";
-import DotNet from "@/icons/dotnet.astro";
-import Laravel from "@/icons/laravel.astro";
-import Vue from "@/icons/vue.astro";
-import Java from "@/icons/java.astro";
-import Python from "@/icons/python.astro";
-import Go from "@/icons/go.astro";
-import Docker from "@/icons/docker.astro";
-import AstroIcon from "@/icons/astro.astro";
-import Shell from "@/icons/bash.astro";
-import Linux from "@/icons/linux.astro";
 
-const SKILLS_ICONS: Record<string, any> = {
-	HTML,
-	CSS,
-	JavaScript,
-	TypeScript,
-	React,
-	Node,
-	MySQL,
-	Git,
-	GitHub,
-	Next,
-	Tailwind,
-	Swift,
-	SwiftUI,
-	Kotlin,
-	Flutter,
-	Figma,
-	Gitlab,
-	"C#": CSharp,
-	".NET": DotNet,
-	Laravel,
-	Vue,
-	Java,
-	Python,
-	Go,
-	Docker,
-	Astro: AstroIcon,
-	Shell,
-	Linux,
-};
+interface Props {
+	className?: string;
+}
+
+const CATEGORY_ORDER = ["Lenguajes", "Backend", "Frontend", "DevOps", "Herramientas"];
+
+const categories = [...new Set([...CATEGORY_ORDER, ...skills.map((s) => s.category)])]
+	.map((category) => ({ category, items: skills.filter((s) => s.category === category) }))
+	.filter(({ items }) => items.length > 0);
 ---
 
 <Section className={Astro.props.className} title="Skills">
-	<div class="flex flex-col gap-1">
+	<dl class="grid gap-4 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-x-6 sm:gap-y-3">
 		{
-			["Lenguajes", "Backend", "Frontend", "DevOps", "Herramientas"].map(category => {
-				const filtered = skills.filter(s => s.category === category);
-				if (filtered.length === 0) return null;
-				return (
-					<div>
-						<div class="flex items-center gap-2 py-1 text-sm text-skin-muted">
-							<svg class="size-3 shrink-0 rotate-90" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-							<span class="font-medium">{category}</span>
-							<span class="text-xs text-skin-muted">({filtered.length})</span>
-						</div>
-						<ul class="[&>li>svg]:text-skin-hue mt-1 flex flex-wrap gap-1.5 pl-5 [&>li>svg]:size-4 [&>li]:text-sm">
-							{filtered.map(({ name }) => {
-								const iconName = name === "Next.js" ? "Next" : name;
-								const Icon = SKILLS_ICONS[iconName];
-								return (
-									<li class="bg-skin-button-accent/10 border-skin-hue/20 text-skin-hue flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs print:border-none print:bg-transparent print:p-0 print:text-zinc-800">
-										{Icon && <Icon />} <span>{name}</span>
-									</li>
-								);
-							})}
+			categories.map(({ category, items }) => (
+				<>
+					<dt class="text-sm font-medium text-skin-muted sm:pt-0.5">{category}</dt>
+					<dd class="-mt-2 sm:mt-0">
+						<ul class="flex flex-wrap gap-1.5" aria-label={category}>
+							{items.map(({ name }) => (
+								<SkillTag name={name} />
+							))}
 						</ul>
-					</div>
-				);
-			})
+					</dd>
+				</>
+			))
 		}
-	</div>
+	</dl>
 </Section>

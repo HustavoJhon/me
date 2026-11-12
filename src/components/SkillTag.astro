@@ -1,0 +1,90 @@
+---
+import HTML from "@/icons/html.astro";
+import CSS from "@/icons/css.astro";
+import JavaScript from "@/icons/javascript.astro";
+import TypeScript from "@/icons/type.astro";
+import React from "@/icons/react.astro";
+import Node from "@/icons/node.astro";
+import MySQL from "@/icons/sql.astro";
+import Git from "@/icons/git.astro";
+import GitHub from "@/icons/GitHub.astro";
+import Tailwind from "@/icons/tailwind.astro";
+import Next from "@/icons/next.astro";
+import Swift from "@/icons/swift.astro";
+import SwiftUI from "@/icons/swiftui.astro";
+import Kotlin from "@/icons/kotlin.astro";
+import Flutter from "@/icons/flutter.astro";
+import Figma from "@/icons/Figma.astro";
+import Gitlab from "@/icons/Gitlab.astro";
+import CSharp from "@/icons/csharp.astro";
+import DotNet from "@/icons/dotnet.astro";
+import Laravel from "@/icons/laravel.astro";
+import Vue from "@/icons/vue.astro";
+import Java from "@/icons/java.astro";
+import Python from "@/icons/python.astro";
+import Go from "@/icons/go.astro";
+import Docker from "@/icons/docker.astro";
+import AstroIcon from "@/icons/astro.astro";
+import Shell from "@/icons/bash.astro";
+import Linux from "@/icons/linux.astro";
+
+interface Props {
+	name: string;
+}
+
+const ICONS: Record<string, typeof HTML> = {
+	HTML,
+	CSS,
+	JavaScript,
+	TypeScript,
+	React,
+	Node,
+	MySQL,
+	Git,
+	GitHub,
+	Next,
+	"Next.js": Next,
+	Tailwind,
+	Swift,
+	SwiftUI,
+	Kotlin,
+	Flutter,
+	Figma,
+	Gitlab,
+	"C#": CSharp,
+	".NET": DotNet,
+	Laravel,
+	Vue,
+	Java,
+	Python,
+	Go,
+	Docker,
+	Astro: AstroIcon,
+	Shell,
+	Linux,
+};
+
+const { name } = Astro.props;
+const Icon = ICONS[name];
+---
+
+<li class="skill-tag">
+	{
+		Icon && (
+			<span aria-hidden="true" class="contents">
+				<Icon />
+			</span>
+		)
+	}
+	<span>{name}</span>
+</li>
+
+<style>
+	.skill-tag {
+		@apply flex items-center gap-1 rounded-md border border-skin-hue/20 bg-skin-button-accent/10 px-2 py-0.5 text-xs text-skin-hue print:border-none print:bg-transparent print:p-0 print:text-zinc-800;
+	}
+
+	.skill-tag :global(svg) {
+		@apply size-3.5 shrink-0;
+	}
+</style>
