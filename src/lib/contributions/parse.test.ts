@@ -34,7 +34,7 @@ function fixture(year: number, counts: number[], totalText?: string): string {
 const daysIn = (y: number) => (y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0) ? 366 : 365);
 
 test("parses totals with thousands separators (1,869 → 1869)", () => {
-	const counts = Array.from({ length: 365 }, (_, i) => (i === 10 ? 1500 : i % 5 === 0 ? 3 : 0));
+	const counts = Array.from({ length: 365 }, (_, i): number => (i === 10 ? 1500 : i % 5 === 0 ? 3 : 0));
 	const data = parseContributionsHtml(fixture(2026, counts), 2026);
 	assert.equal(data.total, counts.reduce((a, b) => a + b, 0));
 	assert.ok(data.total > 1000);
