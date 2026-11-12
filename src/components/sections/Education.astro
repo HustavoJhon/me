@@ -1,6 +1,7 @@
 ---
 import Section from "../Section.astro";
 import { education, certificates } from "@cv";
+import { yearOf } from "@/lib/date";
 
 const icons: Record<string, string> = {
   python: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/><path d="M15 5h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/><path d="M12 2v20"/></svg>`,
@@ -28,8 +29,8 @@ function certIcon(name: string, issuer: string): string {
 	<ul class="space-y-4 py-3 print:space-y-0">
 		{
 			education.map(({ institution, startDate, endDate, area, url }) => {
-				const startYear = new Date(startDate).getFullYear();
-				const endYear = endDate != null ? new Date(endDate).getFullYear() : "Actual";
+				const startYear = yearOf(startDate);
+				const endYear = endDate != null ? yearOf(endDate) : "Actual";
 				const years = `${startYear} - ${endYear}`;
 
 				return (
@@ -61,7 +62,7 @@ function certIcon(name: string, issuer: string): string {
 				<div class="carousel-track" style={`--speed: ${Math.max(15, certificates.length * 2)}s`}>
 					<div class="carousel-group">
 						{certificates.map(({ name, date, issuer, url }) => {
-							const year = new Date(date).getFullYear();
+							const year = yearOf(date);
 							return (
 								<a href={url} target="_blank" class="cert-card">
 									<span class="cert-icon" set:html={icons[certIcon(name, issuer)]} />
@@ -75,7 +76,7 @@ function certIcon(name: string, issuer: string): string {
 					</div>
 					<div class="carousel-group" aria-hidden="true">
 						{certificates.map(({ name, date, issuer, url }) => {
-							const year = new Date(date).getFullYear();
+							const year = yearOf(date);
 							return (
 								<a href={url} target="_blank" class="cert-card" tabindex="-1">
 									<span class="cert-icon" set:html={icons[certIcon(name, issuer)]} />
