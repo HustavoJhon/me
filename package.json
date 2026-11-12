@@ -12,7 +12,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --test \"src/**/*.test.ts\""
+    "test": "node --test \"src/**/*.test.ts\"",
+    "contributions:update": "node scripts/update-contributions.ts"
   },
   "dependencies": {
     "@astrojs/check": "0.4.1",
