@@ -46,10 +46,10 @@ const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 			<>
 				<h3 class="relative flex w-full items-center gap-3 pb-4 text-3xl print:gap-1 print:pb-0 print:text-xl">Projects</h3>
 
-				<div id="project-filter" class="no-print mb-6 flex flex-wrap gap-2">
-					<button data-filter="all" class="filter-btn rounded-full border border-skin-muted/30 px-4 py-1.5 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue active">Todos</button>
+				<div id="project-filter" class="no-print mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar proyectos por categoría">
+					<button type="button" data-filter="all" aria-pressed="true" class="filter-btn inline-flex min-h-10 items-center rounded-full border border-skin-muted px-4 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-skin-hue">Todos</button>
 					{allCategories.map((cat) => (
-						<button data-filter={cat} class="filter-btn rounded-full border border-skin-muted/30 px-4 py-1.5 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue">{cat}</button>
+						<button type="button" data-filter={cat} aria-pressed="false" class="filter-btn inline-flex min-h-10 items-center rounded-full border border-skin-muted px-4 text-sm text-skin-muted transition hover:border-skin-hue hover:text-skin-hue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-skin-hue">{cat}</button>
 					))}
 				</div>
 
@@ -95,7 +95,7 @@ const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 	function applyFilter(category: string) {
 		filterBtns.forEach((btn) => {
 			const isActive = btn.getAttribute("data-filter") === category;
-			btn.classList.toggle("active", isActive);
+			btn.setAttribute("aria-pressed", String(isActive));
 		});
 		groups.forEach((group) => {
 			const match = category === "all" || group.getAttribute("data-category") === category;
@@ -114,8 +114,8 @@ const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 </script>
 
 <style>
-	.active {
-		@apply border-skin-hue bg-skin-hue/10 text-skin-hue !important;
+	.filter-btn[aria-pressed="true"] {
+		@apply border-skin-hue bg-skin-hue/10 text-skin-hue;
 	}
 	.hidden {
 		display: none !important;
