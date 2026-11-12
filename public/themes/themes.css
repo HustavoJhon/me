@@ -56,7 +56,7 @@
     }
     [data-theme="gruvbox"] {
       --color-text-base: 40, 40, 40;
-      --color-text-muted: 146, 131, 116;
+      --color-text-muted: 102, 92, 84;
       --color-text-inverted: 251, 241, 199;
       --color-fill: 251, 241, 199;
       --muted: 213, 196, 161;
@@ -122,13 +122,13 @@
     }
     [data-theme="gruvbox"] {
       --color-text-base: 235, 219, 178;
-      --color-text-muted: 146, 131, 116;
+      --color-text-muted: 168, 153, 132;
       --color-text-inverted: 40, 40, 40;
       --color-fill: 29, 32, 33;
       --muted: 60, 56, 54;
-      --color: 143, 63, 113;
-      --color-button-accent: 143, 63, 113;
-      --color-button-accent-hover: 168, 77, 138;
+      --color: 211, 134, 155;
+      --color-button-accent: 211, 134, 155;
+      --color-button-accent-hover: 177, 98, 134;
       --color-button-muted: 40, 40, 40;
     }
 }
