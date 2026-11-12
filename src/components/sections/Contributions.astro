@@ -1,331 +1,441 @@
 ---
 import Section from "../Section.astro";
+import stored from "@/data/contributions.json";
+import { getContributions } from "@/lib/contributions/load";
+import { buildCalendar } from "@/lib/contributions/calendar";
+import type { StoredSnapshot } from "@/lib/contributions/snapshot";
 
-const { className } = Astro.props;
-
-interface Cell {
-  date: string;
-  level: number;
-  ix: number;
+interface Props {
+	className?: string;
 }
 
-interface YearData {
-  cells: Cell[];
-  total: string;
-  numWeeks: number;
-}
+const { username, years } = await getContributions(stored as StoredSnapshot);
 
-function parseContributions(html: string): { cells: Cell[]; total: string } {
-  const totalMatch = html.match(/<h2[^>]*>[\s]*(\d+)[\s]*\n?contributions/);
-  const total = totalMatch ? totalMatch[1] : "";
-  const cells: Cell[] = [];
-  const regex = /data-ix="(\d+)"[^>]*data-date="([^"]*)"[^>]*data-level="(\d+)"/g;
-  let match;
-  while ((match = regex.exec(html)) !== null) {
-    cells.push({ ix: parseInt(match[1]), date: match[2], level: parseInt(match[3]) });
-  }
-  return { cells, total };
-}
+const MONTHS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const MONTHS_LONG = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const WEEKDAYS = ["", "Lun", "", "Mié", "", "Vie", ""];
 
-async function fetchYear(year: number): Promise<YearData | null> {
-  try {
-    const url = `https://github.com/users/HustavoJhon/contributions?from=${year}-01-01&to=${year}-12-31`;
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const html = await res.text();
-    const { cells, total } = parseContributions(html);
-    if (cells.length === 0) return null;
-    const maxIx = cells.reduce((m, c) => Math.max(m, c.ix), 0);
-    return { cells, total, numWeeks: maxIx + 1 };
-  } catch {
-    return null;
-  }
-}
+// 1869 stays "1869"; grouping only from five digits (18,690), as in Spanish typography.
+const formatCount = (n: number) => (n >= 10_000 ? n.toLocaleString("es-PE") : String(n));
+const shortDate = new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const plural = (n: number) => `${formatCount(n)} ${n === 1 ? "contribución" : "contribuciones"}`;
+const longDay = (iso: string) => `${Number(iso.slice(8, 10))} de ${MONTHS_LONG[Number(iso.slice(5, 7)) - 1]}`;
 
-const yearsList = [2026, 2025, 2024, 2023, 2022];
-const allYears = new Map<number, YearData>();
+// Days after the data was fetched have not happened yet for that snapshot.
+const panels = years.map((data) => {
+	const layout = buildCalendar(data.year);
+	const lastKnownDay = data.fetchedAt.slice(0, 10);
+	const monthly = MONTHS_LONG.map((name, m) => ({
+		name,
+		count: data.days.filter((d) => Number(d.date.slice(5, 7)) - 1 === m).reduce((sum, d) => sum + d.count, 0),
+	}));
+	const busiest = data.days.reduce((best, d) => (d.count > best.count ? d : best), data.days[0]);
+	return { ...data, layout, lastKnownDay, monthly, busiest };
+});
 
-for (const year of yearsList) {
-  const data = await fetchYear(year);
-  if (data) allYears.set(year, data);
-}
-
-const currentYear = new Date().getFullYear();
-const defaultYear = allYears.has(currentYear) ? currentYear : yearsList[0];
-const defaultData = allYears.get(defaultYear)!;
-
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-function computeMonthLabels(cells: Cell[], numWeeks: number): { label: string; count: number }[] {
-  const labels: { label: string; count: number }[] = [];
-  let currentMonth = -1;
-  let currentCount = 0;
-  for (let ix = 0; ix < numWeeks; ix++) {
-    const weekCells = cells.filter((c) => c.ix === ix);
-    if (weekCells.length === 0) continue;
-    const d = new Date(weekCells[0].date + "T12:00:00");
-    d.setDate(d.getDate() - d.getDay());
-    const m = d.getMonth();
-    if (m !== currentMonth) {
-      if (currentMonth !== -1) labels.push({ label: monthNames[currentMonth], count: currentCount });
-      currentMonth = m;
-      currentCount = 1;
-    } else {
-      currentCount++;
-    }
-  }
-  if (currentMonth !== -1) labels.push({ label: monthNames[currentMonth], count: currentCount });
-  return labels;
-}
-
-const serialized: Record<string, any> = {};
-for (const [year, data] of allYears) {
-  const cells: Record<string, { date: string; level: number }> = {};
-  for (const cell of data.cells) {
-    const di = new Date(cell.date + "T12:00:00").getDay();
-    cells[`${cell.ix}-${di}`] = { date: cell.date, level: cell.level };
-  }
-  serialized[year] = {
-    total: data.total,
-    numWeeks: data.numWeeks,
-    cells,
-    monthLabels: computeMonthLabels(data.cells, data.numWeeks),
-  };
-}
+const selected = panels[0];
+const profileUrl = `https://github.com/${username}`;
 ---
 
-<Section title="Contributions" className={className}>
-  <div class="js-yearly-contributions" data-default-year={defaultYear}>
-    <h2 class="text-base font-semibold mb-3" id="js-contribution-activity-description">
-      <span id="contributions-count">{defaultData.total}</span>
-      <span id="contributions-label"> contributions in <span id="contributions-year-label">{defaultYear}</span></span>
-    </h2>
+<Section className={Astro.props.className} title="Contributions">
+	{
+		!selected ? (
+			<p>No hay datos de contribuciones disponibles en este momento.</p>
+		) : (
+			<div class="contrib" data-contrib>
+				<div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+					<p class="text-base font-semibold text-skin-base" aria-live="polite" data-contrib-total>
+						{plural(selected.total)} en {selected.year}
+					</p>
 
-    <div class="flex flex-col md:flex-row gap-6">
-      <div class="flex-1 min-w-0">
-        <div class="border rounded-md py-2 graph-before-activity-overflow">
-          <div style="max-width: 100%; overflow-y: hidden; overflow-x: auto">
-            <div id="contributions-graph-container"></div>
-          </div>
-        </div>
+					<div class="contrib-years" role="tablist" aria-label="Año">
+						{panels.map((p) => (
+							<button
+								type="button"
+								role="tab"
+								id={`contrib-tab-${p.year}`}
+								aria-controls={`contrib-panel-${p.year}`}
+								aria-selected={p === selected ? "true" : "false"}
+								tabindex={p === selected ? 0 : -1}
+								data-year={p.year}
+								data-total={`${plural(p.total)} en ${p.year}`}
+								class="contrib-year"
+							>
+								{p.year}
+							</button>
+						))}
+					</div>
+				</div>
 
-        <div class="flex items-center justify-between mt-2 text-xs">
-          <a
-            href="https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/managing-contribution-settings-on-your-profile/why-are-my-contributions-not-showing-up-on-my-profile"
-            class="text-skin-muted hover:text-skin-base"
-          >
-            Learn how we count contributions
-          </a>
-          <div class="flex items-center gap-0.5 text-skin-muted">
-            <span class="mr-0.5">Less</span>
-            {[0, 1, 2, 3, 4].map((lvl) => (
-              <div
-                id={`contribution-graph-legend-level-${lvl}`}
-                class={`ContributionCalendar-day rounded-sm contribution-lvl-${lvl}`}
-                style="width: 11px; height: 11px"
-              >
-                <span class="sr-only">
-                  {lvl === 0 ? "No" : lvl === 1 ? "Low" : lvl === 2 ? "Medium-low" : lvl === 3 ? "Medium-high" : "High"} contributions.
-                </span>
-              </div>
-            ))}
-            <span class="ml-0.5">More</span>
-          </div>
-        </div>
-      </div>
+				{panels.map((p) => (
+					<div role="tabpanel" id={`contrib-panel-${p.year}`} aria-labelledby={`contrib-tab-${p.year}`} hidden={p !== selected} class="contrib-panel" data-year={p.year} data-last-day={p.lastKnownDay}>
+						<div class="contrib-scroll">
+							<div class="contrib-graph" style={`--weeks: ${p.layout.weeks}`}>
+								<div class="contrib-months" aria-hidden="true">
+									{p.layout.monthLabels.map(({ month, column }) => (
+										<span style={`grid-column: ${column + 2}`}>{MONTHS[month]}</span>
+									))}
+								</div>
+								<div
+									class="contrib-days"
+									tabindex="0"
+									role="group"
+									aria-roledescription="calendario"
+									aria-label={`Contribuciones diarias en ${p.year}. Usa las flechas para recorrer los días.`}
+									data-days
+								>
+									{WEEKDAYS.map((label) => (
+										<span class="contrib-wd" aria-hidden="true">
+											{label}
+										</span>
+									))}
+									{Array.from({ length: p.layout.offset }, () => (
+										<i data-pad />
+									))}
+									{p.days.map(({ date, count, level }) =>
+										date > p.lastKnownDay ? <i data-future /> : <i data-l={level || undefined} data-c={count || undefined} />,
+									)}
+								</div>
+							</div>
+						</div>
 
-      <div class="flex md:flex-col gap-1 md:gap-1.5 flex-shrink-0 md:pt-1" id="contributions-year-list">
-        {yearsList.map((y) => {
-          const hasData = allYears.has(y);
-          const isCurrent = y === defaultYear;
-          return (
-            <button
-              data-year={y}
-              class={`year-btn text-xs px-2 py-1 rounded-md transition-colors text-center ${
-                !hasData ? "opacity-30 cursor-not-allowed" : ""
-              } ${
-                isCurrent
-                  ? "bg-[rgba(var(--color),0.15)] text-skin-base font-semibold"
-                  : "text-skin-muted hover:text-skin-base hover:bg-[rgba(var(--color),0.08)]"
-              }`}
-              {...(hasData ? {} : { disabled: true })}
-            >
-              {y}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  </div>
+						<div class="sr-only">
+							<p>
+								{plural(p.total)} en {p.year}.
+								{p.busiest.count > 0 && ` Día con más actividad: ${longDay(p.busiest.date)}, con ${plural(p.busiest.count)}.`}
+							</p>
+							<table>
+								<caption>Contribuciones por mes en {p.year}</caption>
+								<thead>
+									<tr>
+										<th scope="col">Mes</th>
+										<th scope="col">Contribuciones</th>
+									</tr>
+								</thead>
+								<tbody>
+									{p.monthly.map(({ name, count }) => (
+										<tr>
+											<th scope="row">{name}</th>
+											<td>{count}</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+
+						<div class="mt-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs text-skin-muted">
+							<p class="text-xs">
+								Datos de{" "}
+								<a href={profileUrl} target="_blank" rel="noopener noreferrer" class="underline decoration-dotted underline-offset-2 hover:text-skin-hue">
+									GitHub
+								</a>{" "}
+								al <time datetime={p.fetchedAt}>{shortDate.format(new Date(p.fetchedAt))}</time>
+							</p>
+							<div class="flex items-center gap-1" aria-hidden="true">
+								<span class="mr-1">Menos</span>
+								{[0, 1, 2, 3, 4].map((l) => (
+									<i class="contrib-legend" data-l={l || undefined} />
+								))}
+								<span class="ml-1">Más</span>
+							</div>
+						</div>
+					</div>
+				))}
+
+				<div class="contrib-tip" role="tooltip" hidden data-contrib-tip></div>
+				<p class="sr-only" aria-live="polite" data-contrib-live></p>
+			</div>
+		)
+	}
 </Section>
 
-<script define:vars={{ yearData: serialized }}>
+<script>
+	const MONTHS_LONG = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+	const formatCount = (n: number) => (n >= 10_000 ? n.toLocaleString("es-PE") : String(n));
 
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+	const describe = (cell: HTMLElement, iso: string) => {
+		const [y, m, d] = iso.split("-").map(Number);
+		const day = `${d} de ${MONTHS_LONG[m - 1]} de ${y}`;
+		if (cell.hasAttribute("data-future")) return `${day}: sin datos todavía`;
+		const count = Number(cell.dataset.c ?? 0);
+		if (count === 0) return `Sin contribuciones el ${day}`;
+		return `${formatCount(count)} ${count === 1 ? "contribución" : "contribuciones"} el ${day}`;
+	};
 
-  function formatDate(dateStr) {
-    const d = new Date(dateStr + "T12:00:00");
-    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  }
+	const isoFromIndex = (year: number, index: number) => new Date(Date.UTC(year, 0, 1 + index)).toISOString().slice(0, 10);
 
-  function renderGraph(data) {
-    const container = document.getElementById("contributions-graph-container");
-    const cells = data.cells;
-    const numWeeks = data.numWeeks;
-    const monthLabels = data.monthLabels;
+	document.querySelectorAll<HTMLElement>("[data-contrib]").forEach((root) => {
+		const tip = root.querySelector<HTMLElement>("[data-contrib-tip]")!;
+		const live = root.querySelector<HTMLElement>("[data-contrib-live]")!;
+		const totalLabel = root.querySelector<HTMLElement>("[data-contrib-total]")!;
+		const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+		const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
 
-    let html = `<table role="grid" aria-readonly="true" class="ContributionCalendar-grid" style="border-spacing: 4px; overflow: hidden; position: relative">
-      <caption class="sr-only">Contribution Graph</caption>
-      <thead>
-        <tr style="height: 15px">
-          <td style="width: 29px"><span class="sr-only">Day of Week</span></td>`;
+		// Day cells per panel, in date order (excludes weekday labels and padding).
+		const cellsOf = new Map<HTMLElement, HTMLElement[]>();
+		const indexOf = new WeakMap<HTMLElement, number>();
+		for (const panel of panels) {
+			const cells = [...panel.querySelectorAll<HTMLElement>("[data-days] > i:not([data-pad])")];
+			cells.forEach((cell, i) => indexOf.set(cell, i));
+			cellsOf.set(panel, cells);
+		}
 
-    for (const m of monthLabels) {
-      html += `<td class="ContributionCalendar-label" colspan="${m.count}" style="position: relative">
-        <span class="sr-only">${m.label}</span>
-        <span aria-hidden="true" style="position: absolute; top: 0; font-size: 11px">${m.label}</span>
-      </td>`;
-    }
+		const showTip = (panel: HTMLElement, cell: HTMLElement) => {
+			const year = Number(panel.dataset.year);
+			tip.textContent = describe(cell, isoFromIndex(year, indexOf.get(cell)!));
+			tip.hidden = false;
+			const host = root.getBoundingClientRect();
+			const box = cell.getBoundingClientRect();
+			const width = tip.offsetWidth;
+			const left = Math.min(Math.max(box.left + box.width / 2 - host.left - width / 2, 0), host.width - width);
+			tip.style.left = `${left}px`;
+			tip.style.top = `${box.top - host.top - tip.offsetHeight - 6}px`;
+			return tip.textContent;
+		};
 
-    html += `</tr></thead><tbody>`;
+		const hideTip = () => {
+			tip.hidden = true;
+		};
 
-    for (let dayIdx = 0; dayIdx < 7; dayIdx++) {
-      const showLabel = dayIdx === 1 || dayIdx === 3 || dayIdx === 5;
-      html += `<tr style="height: 11px">
-        <td class="ContributionCalendar-label" style="position: relative; width: 29px">
-          <span class="sr-only">${dayNames[dayIdx]}</span>
-          <span aria-hidden="true" style="clip-path: ${showLabel ? "None" : "Circle(0)"}; position: absolute; bottom: -4px; font-size: 11px">${dayNames[dayIdx]}</span>
-        </td>`;
+		const scrollToRecent = (panel: HTMLElement) => {
+			const scroller = panel.querySelector<HTMLElement>(".contrib-scroll")!;
+			if (scroller.scrollWidth <= scroller.clientWidth) return;
+			const cells = cellsOf.get(panel)!;
+			const last = cells.findLast((c) => !c.hasAttribute("data-future")) ?? cells.at(-1)!;
+			scroller.scrollLeft = last.offsetLeft - scroller.clientWidth + last.offsetWidth * 4;
+		};
 
-      for (let ix = 0; ix < numWeeks; ix++) {
-        const cellKey = `${ix}-${dayIdx}`;
-        const cell = cells[cellKey];
-        if (cell) {
-          const id = `contribution-day-component-${dayIdx}-${ix}`;
-          html += `<td id="${id}" tabindex="0" data-ix="${ix}" aria-selected="false" aria-describedby="contribution-graph-legend-level-${cell.level}" data-date="${cell.date}" data-level="${cell.level}" role="gridcell" data-view-component="true" class="ContributionCalendar-day contribution-lvl-${cell.level}"></td>
-          <tool-tip style="pointer-events: none;" for="${id}" popover="manual" data-direction="n" data-type="label" data-view-component="true" class="sr-only position-absolute">${
-            cell.level > 0
-              ? `${cell.level} contribution${cell.level !== 1 ? "s" : ""} on ${formatDate(cell.date)}`
-              : `No contributions on ${formatDate(cell.date)}.`
-          }</tool-tip>`;
-        } else {
-          html += `<td style="width: 11px; height: 11px"></td>`;
-        }
-      }
-      html += `</tr>`;
-    }
-    html += `</tbody></table>`;
-    container.innerHTML = html;
-  }
+		const select = (tab: HTMLButtonElement, focus = false) => {
+			for (const t of tabs) {
+				const active = t === tab;
+				t.setAttribute("aria-selected", String(active));
+				t.tabIndex = active ? 0 : -1;
+			}
+			for (const panel of panels) {
+				panel.hidden = panel.id !== tab.getAttribute("aria-controls");
+				if (!panel.hidden) scrollToRecent(panel);
+			}
+			totalLabel.textContent = tab.dataset.total ?? "";
+			hideTip();
+			if (focus) tab.focus();
+		};
 
-  function showYear(year) {
-    const data = yearData[year];
-    if (!data) return;
+		tabs.forEach((tab, i) => {
+			tab.addEventListener("click", () => select(tab));
+			tab.addEventListener("keydown", (event) => {
+				const moves: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+				if (!(event.key in moves)) return;
+				event.preventDefault();
+				select(tabs[(moves[event.key] + tabs.length) % tabs.length], true);
+			});
+		});
 
-    document.getElementById("contributions-count").textContent = data.total;
-    document.getElementById("contributions-year-label").textContent = year;
-    renderGraph(data);
+		for (const panel of panels) {
+			const grid = panel.querySelector<HTMLElement>("[data-days]")!;
+			const cells = cellsOf.get(panel)!;
+			let active = -1;
 
-    document.querySelectorAll(".year-btn").forEach((btn) => {
-      const y = parseInt(btn.dataset.year);
-      const isCurrent = y === year;
-      btn.className = `year-btn text-xs px-2 py-1 rounded-md transition-colors text-center ${
-        isCurrent
-          ? "bg-[rgba(var(--color),0.15)] text-skin-base font-semibold"
-          : "text-skin-muted hover:text-skin-base hover:bg-[rgba(var(--color),0.08)]"
-      }`;
-    });
-  }
+			const activate = (index: number) => {
+				cells[active]?.classList.remove("is-active");
+				active = Math.max(0, Math.min(cells.length - 1, index));
+				const cell = cells[active];
+				cell.classList.add("is-active");
+				cell.scrollIntoView({ block: "nearest", inline: "nearest" });
+				live.textContent = showTip(panel, cell);
+			};
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const defaultYear = parseInt(
-      document.querySelector(".js-yearly-contributions").dataset.defaultYear
-    );
-    renderGraph(yearData[defaultYear]);
+			grid.addEventListener("pointerover", (event) => {
+				const cell = (event.target as HTMLElement).closest<HTMLElement>("i");
+				if (cell && indexOf.has(cell)) showTip(panel, cell);
+			});
+			grid.addEventListener("pointerleave", () => {
+				if (document.activeElement !== grid) hideTip();
+			});
 
-    document.querySelectorAll(".year-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const year = parseInt(btn.dataset.year);
-        if (yearData[year]) showYear(year);
-      });
-    });
-  });
+			grid.addEventListener("focus", () => {
+				if (active < 0) {
+					const lastKnown = cells.findLastIndex((c) => !c.hasAttribute("data-future"));
+					active = lastKnown < 0 ? 0 : lastKnown;
+				}
+				activate(active);
+			});
+			grid.addEventListener("blur", () => {
+				cells[active]?.classList.remove("is-active");
+				hideTip();
+			});
+			grid.addEventListener("keydown", (event) => {
+				const moves: Record<string, number> = {
+					ArrowUp: active - 1,
+					ArrowDown: active + 1,
+					ArrowLeft: active - 7,
+					ArrowRight: active + 7,
+					Home: 0,
+					End: cells.length - 1,
+				};
+				if (!(event.key in moves)) {
+					if (event.key === "Escape") hideTip();
+					return;
+				}
+				event.preventDefault();
+				activate(moves[event.key]);
+			});
+		}
+
+		window.addEventListener("resize", hideTip, { passive: true });
+		root.querySelectorAll(".contrib-scroll").forEach((s) => s.addEventListener("scroll", hideTip, { passive: true }));
+		const initial = panels.find((p) => !p.hidden);
+		if (initial) scrollToRecent(initial);
+	});
 </script>
 
-<style is:global>
-  .ContributionCalendar-grid {
-    table-layout: fixed;
-    width: max-content;
-  }
+<style>
+	.contrib {
+		--cell-min: 11px;
+		--cell-max: 15px;
+		--gap: 3px;
+		--label-w: 1.75rem;
+		--c0: rgb(var(--color-button-muted));
+		--c4: rgb(var(--color));
+		position: relative;
+	}
 
-  .ContributionCalendar-day {
-    width: 11px;
-    height: 11px;
-  }
+	:global(.dark) .contrib {
+		--c0: rgb(var(--muted));
+	}
 
-  .contribution-lvl-0 {
-    background-color: #ebedf0;
-  }
-  .contribution-lvl-1 {
-    background-color: rgba(var(--color), 0.15);
-  }
-  .contribution-lvl-2 {
-    background-color: rgba(var(--color), 0.35);
-  }
-  .contribution-lvl-3 {
-    background-color: rgba(var(--color), 0.55);
-  }
-  .contribution-lvl-4 {
-    background-color: rgba(var(--color), 0.8);
-  }
-  .dark .contribution-lvl-0 {
-    background-color: #161b22;
-  }
-  .dark .contribution-lvl-1 {
-    background-color: rgba(var(--color), 0.2);
-  }
-  .dark .contribution-lvl-2 {
-    background-color: rgba(var(--color), 0.4);
-  }
-  .dark .contribution-lvl-3 {
-    background-color: rgba(var(--color), 0.6);
-  }
-  .dark .contribution-lvl-4 {
-    background-color: rgba(var(--color), 0.9);
-  }
+	@media (min-width: 640px) {
+		.contrib {
+			--cell-min: 7px;
+		}
+	}
 
-  @media (max-width: 640px) {
-    .ContributionCalendar-grid {
-      border-spacing: 3px !important;
-    }
-    .ContributionCalendar-day {
-      width: 9px !important;
-      height: 9px !important;
-    }
-    td[style*="width: 11px"] {
-      width: 9px !important;
-      height: 9px !important;
-    }
-    .ContributionCalendar-label span[aria-hidden="true"] {
-      font-size: 9px !important;
-    }
-  }
+	.contrib-years {
+		@apply -mx-1 flex max-w-full gap-1 overflow-x-auto px-1 py-1;
+		scrollbar-width: none;
+	}
 
-  @media (max-width: 400px) {
-    .ContributionCalendar-grid {
-      border-spacing: 2px !important;
-    }
-    .ContributionCalendar-day {
-      width: 7px !important;
-      height: 7px !important;
-    }
-    td[style*="width: 11px"] {
-      width: 7px !important;
-      height: 7px !important;
-    }
-    .ContributionCalendar-label span[aria-hidden="true"] {
-      font-size: 8px !important;
-    }
-  }
+	.contrib-year {
+		@apply inline-flex min-h-9 shrink-0 items-center rounded-md px-3 text-sm tabular-nums text-skin-muted transition-colors hover:bg-skin-hue/10 hover:text-skin-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-skin-hue;
+	}
+
+	.contrib-year[aria-selected="true"] {
+		@apply bg-skin-hue/15 font-semibold text-skin-base;
+	}
+
+	.contrib-panel {
+		@apply mt-3 rounded-lg p-3 ring-1 ring-skin-muted sm:p-4;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.contrib-panel:not([hidden]) {
+			animation: contrib-in 0.25s ease-out;
+		}
+	}
+
+	@keyframes contrib-in {
+		from {
+			opacity: 0;
+		}
+	}
+
+	.contrib-scroll {
+		@apply relative overflow-x-auto pb-1;
+		scrollbar-width: thin;
+		scrollbar-color: rgb(var(--muted)) transparent;
+	}
+
+	.contrib-graph {
+		--cols: var(--label-w) repeat(var(--weeks), minmax(var(--cell-min), var(--cell-max)));
+		display: grid;
+		gap: 4px;
+		/* Fluid cells between --cell-min and --cell-max; scroll only below the minimum. */
+		width: 100%;
+		min-width: min-content;
+	}
+
+	.contrib-months,
+	.contrib-days {
+		display: grid;
+		grid-template-columns: var(--cols);
+		column-gap: var(--gap);
+	}
+
+	.contrib-months {
+		@apply text-[0.6875rem] leading-none text-skin-muted;
+	}
+
+	.contrib-months span {
+		@apply whitespace-nowrap;
+	}
+
+	.contrib-days {
+		grid-template-rows: repeat(7, auto);
+		grid-auto-flow: column;
+		row-gap: var(--gap);
+		@apply rounded outline-none;
+	}
+
+	/* Keyboard focus: highlight the panel border plus the active day (an outline would cover month labels). */
+	.contrib-panel:has([data-days]:focus-visible) {
+		@apply ring-2 ring-skin-hue;
+	}
+
+	.contrib-wd {
+		@apply sticky left-0 z-[1] flex items-center bg-skin-fill pr-1 text-[0.6875rem] leading-none text-skin-muted;
+	}
+
+	.contrib-days i,
+	.contrib-legend {
+		display: block;
+		aspect-ratio: 1;
+		border-radius: 2px;
+		background: var(--c0);
+		outline: 1px solid rgb(0 0 0 / 0.05);
+		outline-offset: -1px;
+	}
+
+	:global(.dark) .contrib-days i,
+	:global(.dark) .contrib-legend {
+		outline-color: rgb(255 255 255 / 0.04);
+	}
+
+	.contrib-legend {
+		width: 10px;
+	}
+
+	.contrib [data-l="1"] {
+		background: color-mix(in srgb, var(--c4) 30%, var(--c0));
+	}
+
+	.contrib [data-l="2"] {
+		background: color-mix(in srgb, var(--c4) 52%, var(--c0));
+	}
+
+	.contrib [data-l="3"] {
+		background: color-mix(in srgb, var(--c4) 76%, var(--c0));
+	}
+
+	.contrib [data-l="4"] {
+		background: var(--c4);
+	}
+
+	.contrib-days [data-pad] {
+		visibility: hidden;
+	}
+
+	.contrib-days [data-future] {
+		background: transparent;
+		outline: 1px dashed rgba(var(--color-text-muted), 0.45);
+	}
+
+	.contrib-days i.is-active {
+		outline: 2px solid rgb(var(--color-text-base));
+		outline-offset: 1px;
+		position: relative;
+		z-index: 1;
+	}
+
+	.contrib-tip {
+		@apply pointer-events-none absolute left-0 top-0 z-20 max-w-[16rem] whitespace-nowrap rounded-md bg-skin-button-accent px-2.5 py-1.5 text-xs text-skin-inverted shadow-lg;
+	}
 </style>
