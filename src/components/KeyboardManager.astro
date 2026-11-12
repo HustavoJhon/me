@@ -57,9 +57,9 @@ const profilesInfo = profiles.map(({ network, url }) => {
 });
 ---
 
-<p class="kb-hint no-print">
-	Pulsa <kbd data-mod-key>Ctrl</kbd> + <kbd>K</kbd> para abrir la paleta de comandos.
-</p>
+<aside class="kb-hint no-print" aria-label="Atajo de teclado">
+	<p>Pulsa <kbd data-mod-key>Ctrl</kbd> + <kbd>K</kbd> para abrir la paleta de comandos.</p>
+</aside>
 
 <button type="button" class="footer-button kb-fab no-print" aria-label="Abrir paleta de comandos">
 	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -135,7 +135,11 @@ const profilesInfo = profiles.map(({ network, url }) => {
 	@reference "../styles/global.css";
 
 	.kb-hint {
-		@apply mx-auto max-w-7xl px-5 pb-10 text-center text-xs;
+		@apply mx-auto max-w-7xl px-5 pb-10 text-center;
+	}
+
+	.kb-hint p {
+		@apply text-xs;
 	}
 
 	.kb-hint kbd {
