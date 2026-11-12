@@ -21,35 +21,21 @@ import Theme from "@/icons/themeSwitch.astro";
 		</select>
 	</div>
 
-	<style>
-		:global(.dark) {
-			color-scheme: dark;
-		}
-	</style>
-
 	<script>
 		const select = document.getElementById("themeSwitch") as HTMLSelectElement;
-		const theme = localStorage.getItem("theme");
-		const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-
-		if (theme !== null) {
-			select.value = theme;
-		} else {
-			select.value = systemTheme;
+		try {
+			select.value = localStorage.getItem("theme") ?? "system";
+		} catch {
+			select.value = "system";
 		}
 
-		function updateTheme(value: string) {
-			const theme = value === "system" ? systemTheme : value;
-			document.documentElement.classList.remove("light", "dark");
-			document.documentElement.classList.add(theme);
-			localStorage.setItem("theme", value);
-		}
-
-		updateTheme(select.value);
-
-		select.addEventListener("change", (event: Event) => {
-			const select = event.target as HTMLSelectElement;
-			updateTheme(select.value);
+		select.addEventListener("change", () => {
+			try {
+				localStorage.setItem("theme", select.value);
+			} catch {
+				// Storage unavailable (private mode): theme still applies for this page view.
+			}
+			window.applyTheme?.();
 		});
 	</script>
 </div>
