@@ -53,13 +53,13 @@ const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 				<div id="project-groups" class="flex flex-col gap-10">
 					{categoryGroups!.map(([category, items]) => (
 						<section data-category={category} aria-label={category}>
-							<h3 class="mb-4 flex items-center gap-3 text-lg font-semibold text-skin-hue">
+							<h2 class="mb-4 flex items-center gap-3 text-lg font-semibold text-skin-hue">
 								{category}
 								<span class="h-px flex-1 bg-skin-muted" aria-hidden="true" />
-							</h3>
+							</h2>
 							<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 print:flex print:flex-col">
 								{items.map((item) => (
-									<ProjectCard {...item} headingLevel={4} />
+									<ProjectCard {...item} />
 								))}
 							</div>
 						</section>
