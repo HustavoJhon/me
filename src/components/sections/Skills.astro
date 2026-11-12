@@ -14,7 +14,7 @@ const categories = [...new Set([...CATEGORY_ORDER, ...skills.map((s) => s.catego
 	.filter(({ items }) => items.length > 0);
 ---
 
-<Section className={Astro.props.className} title="Skills">
+<Section className={Astro.props.className} title="Habilidades">
 	<dl class="grid gap-4 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-x-6 sm:gap-y-3">
 		{
 			categories.map(({ category, items }) => (

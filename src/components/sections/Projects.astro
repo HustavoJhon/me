@@ -35,7 +35,7 @@ const categoryGroups = showAll ? sortedGroups(displayed) : null;
 const allCategories = showAll ? categoryGroups!.map(([c]) => c) : [];
 ---
 
-<Section className={Astro.props.className} title="Projects" titleHref={showAll ? undefined : "/projects"} headingLevel={showAll ? 1 : 2}>
+<Section className={Astro.props.className} title="Proyectos" titleHref={showAll ? undefined : "/projects"} headingLevel={showAll ? 1 : 2}>
 	{
 		showAll ? (
 			<>

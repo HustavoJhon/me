@@ -36,7 +36,7 @@ const sortedCertificates = [...certificates].sort((a, b) => b.date.localeCompare
 const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 ---
 
-<Section className={Astro.props.className} title="Education">
+<Section className={Astro.props.className} title="Educación">
 	<ul class="flex flex-col gap-5 print:gap-2">
 		{
 			education.map(({ institution, startDate, endDate, area, studyType, url }) => {
