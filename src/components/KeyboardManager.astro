@@ -164,6 +164,15 @@ const profilesInfo = profiles.map(({ network, url }) => {
 		}
 	}
 
+	/*
+	 * hotkeypad declares `width: fit-content` followed by `width: -moz-fit-content`; Vite 8's
+	 * CSS minifier keeps only the prefixed value, which Chromium ignores, squashing the kbd chips.
+	 */
+	:global(#hotkeypad [data-container] header span),
+	:global(#hotkeypad [data-hotkey] div span) {
+		width: fit-content;
+	}
+
 	#hotkeypad {
 		--hotkeypad-bg-kbd: rgb(var(--color-button-muted));
 		--hotkeypad-bg-backdrop: rgb(var(--color-text-base));

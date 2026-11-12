@@ -99,7 +99,7 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 								<span class="flex min-w-0 flex-col">
 									<span class="cert-name">{name}</span>
 									<span class="text-xs text-skin-muted">
-										{issuer} · {yearOf(date)}
+										{issuer} · {yearOf(date)}{" "}
 										{isPdf(url) && <span class="cert-badge">PDF</span>}
 									</span>
 								</span>
