@@ -52,6 +52,7 @@ const imageAlt = `Avatar de ${name}`;
 
 		<link rel="stylesheet" href="/themes/themes.css" />
 		<Vengeance />
+		<slot name="head" />
 		<meta name="color-scheme" content="light dark" />
 		<!-- Runs before first paint: avoids a theme flash and applies the theme on every page. -->
 		<script is:inline>

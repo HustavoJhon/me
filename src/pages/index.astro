@@ -12,11 +12,30 @@ import Tail from "@/components/sections/Tail.astro";
 import KeyboardManager from "@/components/KeyboardManager.astro";
 import ThemeSwitch from "@/components/ThemeSwitch.astro";
 
-import { basics } from "@cv";
-const { name, label } = basics;
+import { basics, work } from "@cv";
+import { absoluteUrl } from "@/lib/site";
+const { name, label, image, summary, location, profiles } = basics;
+
+const currentJob = work.find(({ endDate }) => !endDate);
+// schema.org Person for search engines; built only from data already shown on the page.
+const personLd = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	name,
+	jobTitle: label,
+	description: summary,
+	url: absoluteUrl("/"),
+	image: absoluteUrl(image),
+	address: { "@type": "PostalAddress", addressRegion: location.region, addressCountry: location.countryCode },
+	sameAs: profiles.map(({ url }) => url),
+	...(currentJob && { worksFor: { "@type": "Organization", name: currentJob.name, url: currentJob.url } }),
+};
+// Escape "<" so the JSON can never close the script element early.
+const personLdJson = JSON.stringify(personLd).replace(/</g, "\\u003c");
 ---
 
 <Layout title={`${name} Portafolio - ${label}`}>
+	<script type="application/ld+json" slot="head" set:html={personLdJson} />
 	<main class="relative mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-6 lg:gap-16 lg:px-12 xl:gap-24 xl:px-16 print:max-w-none print:grid-cols-1 print:gap-6 print:p-8">
 		<aside class="sidebar min-w-0 space-y-6 lg:col-span-2 print:col-span-1 print:grid print:grid-cols-2 print:gap-5 print:space-y-0">
 			<div data-reveal><Hero /></div>
