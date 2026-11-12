@@ -46,3 +46,20 @@ Change the data-theme of `cv.json` and choose one of the colour themes defined i
 | ⚙️  | `dev` o `start` | Launches a local development server at `localhost:4321`.                   |
 | ⚙️  | `build`         | Checks for errors and creates a production build in `./dist/`. |
 | ⚙️  | `preview`       | Local preview at `localhost:4321`                                       |
+
+## GitHub contributions data
+
+The contribution graph never depends on GitHub being available at build time.
+
+- `src/data/contributions.json` is a committed, validated snapshot (one entry per year, with the date it was fetched).
+- During `astro build`/`astro dev` only the **current year** is refreshed from GitHub (8 s timeout). If the request fails, times out or the HTML does not validate (complete year, daily counts summing to the total), the snapshot is used and a `[contributions]` warning is logged. The page always shows the real date of the data it renders.
+- Set `CONTRIBUTIONS_OFFLINE=1` to skip the network entirely.
+
+Refresh the snapshot (e.g. at the start of a new year) and commit the result:
+
+```bash
+pnpm contributions:update             # every year with activity
+pnpm contributions:update 2025 2026   # specific years only
+```
+
+Only years that pass validation are written; failed years keep their previous data. Parser and loader tests: `pnpm test`.
