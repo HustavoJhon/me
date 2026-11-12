@@ -70,6 +70,12 @@ const profilesInfo = profiles.map(({ network, url }) => {
 
 <div id="hotkeypad" data-placeholder="Buscar comando" data-info={JSON.stringify(profilesInfo)}></div>
 
+<template id="hotkeypad-footer">
+	<p><kbd>↩</kbd> para seleccionar</p>
+	<p><kbd>↑</kbd><kbd>↓</kbd> para navegar</p>
+	<p><kbd data-mod-key>Ctrl</kbd><kbd>K</kbd><kbd>Esc</kbd> para cerrar</p>
+</template>
+
 <script>
 	interface Info {
 		id: string;
@@ -83,7 +89,7 @@ const profilesInfo = profiles.map(({ network, url }) => {
 
 	import HotKeyPad from "hotkeypad";
 
-	const hotkeypad = new HotKeyPad();
+	const hotkeypad = new HotKeyPad({ emptyMessage: "No se encontraron comandos" });
 	const info = hotkeypad.instance.getAttribute("data-info") ?? "[]";
 	const parsedInfo = JSON.parse(info) as Info[];
 
@@ -131,7 +137,7 @@ const profilesInfo = profiles.map(({ network, url }) => {
 		@apply mx-auto max-w-7xl px-5 pb-10 text-center text-xs;
 	}
 
-	kbd {
+	.kb-hint kbd {
 		@apply rounded border border-skin-muted bg-skin-button-muted px-1.5 py-0.5 font-mono text-[0.7rem] text-skin-base;
 	}
 
