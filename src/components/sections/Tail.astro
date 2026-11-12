@@ -1,16 +1,18 @@
 ---
+import { basics } from "@cv";
 
+const { name, profiles } = basics;
+const profileUrl = profiles.find(({ network }) => network === "X")?.url ?? basics.url;
 ---
 
-<div class="flex w-full max-w-7xl justify-center lg:col-span-6 print:hidden">
-	<a href="https://twitter.com/hustavojhon" rel="noreferrer" target="_blank" class="group flex items-center space-x-1 text-xs">
-		<span class="hover:decoration- flex gap-1 underline decoration-dotted underline-offset-4 transition group-hover:underline-offset-4"
-			>Gustavo Jhon
-			<svg class="text-skin-hue w-4 group-hover:animate-pulse" viewBox="0 0 55 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path fill-rule="evenodd" clip-rule="evenodd" d="M22.0538 0.250122L0.687988 36.422H11.3709L21.8664 18.4298L32.5493 36.422H43.2322L37.9844 27.4259L22.0538 0.250122Z" fill="currentColor" class=""></path>
-				<path fill-rule="evenodd" clip-rule="evenodd" d="M43.2321 36.422L48.6673 27.4259L43.607 18.4297L37.9844 27.6133L43.2321 36.422Z" opacity="5" fill="currentColor" fill-opacity="0.8" class=""></path>
-				<path fill-rule="evenodd" clip-rule="evenodd" d="M32.9243 0.250122L43.4198 0.250122L54.1027 18.6172L48.6675 27.4259L32.9243 0.250122Z" fill="currentColor" class=""></path>
-			</svg>
-		</span>
+<footer class="flex w-full justify-center pt-4 lg:col-span-6 print:hidden">
+	<a href={profileUrl} rel="noopener noreferrer" target="_blank" class="group inline-flex min-h-10 items-center gap-1.5 text-xs text-skin-muted transition-colors hover:text-skin-hue">
+		<span class="underline decoration-dotted underline-offset-4">{name}</span>
+		<svg class="w-4 text-skin-hue group-hover:animate-pulse motion-reduce:animate-none" viewBox="0 0 55 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M22.0538 0.250122L0.687988 36.422H11.3709L21.8664 18.4298L32.5493 36.422H43.2322L37.9844 27.4259L22.0538 0.250122Z" fill="currentColor"></path>
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M43.2321 36.422L48.6673 27.4259L43.607 18.4297L37.9844 27.6133L43.2321 36.422Z" fill="currentColor" fill-opacity="0.8"></path>
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M32.9243 0.250122L43.4198 0.250122L54.1027 18.6172L48.6675 27.4259L32.9243 0.250122Z" fill="currentColor"></path>
+		</svg>
+		<span class="sr-only">(X, se abre en una pestaña nueva)</span>
 	</a>
-</div>
+</footer>
