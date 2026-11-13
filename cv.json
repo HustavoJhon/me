@@ -103,86 +103,86 @@
     },
     {
       "name": "Fundamentos de Python",
-      "date": "2024-06-15",
+      "date": "2023-01-16",
       "issuer": "Platzi",
       "url": "/certificates/diploma-python-fundamentos.pdf"
     },
     {
-      "name": "Python: Ciencia de la Computación",
-      "date": "2024-07-10",
+      "name": "Introducción al Pensamiento Computacional con Python",
+      "date": "2023-05-16",
       "issuer": "Platzi",
       "url": "/certificates/diploma-python-cs.pdf"
     },
     {
-      "name": "Python Básico",
-      "date": "2024-05-20",
+      "name": "Curso Básico de Python",
+      "date": "2022-10-06",
       "issuer": "Platzi",
       "url": "/certificates/diploma-python-basico.pdf"
     },
     {
-      "name": "C#",
-      "date": "2024-08-15",
+      "name": "Curso Básico de C#: Fundamentos, Variables y Operadores",
+      "date": "2024-11-15",
       "issuer": "Platzi",
       "url": "/certificates/diploma-csharp.pdf"
     },
     {
-      "name": "C#: Programación Orientada a Objetos",
-      "date": "2024-09-01",
+      "name": "Programación Orientada a Objetos con C#",
+      "date": "2024-11-15",
       "issuer": "Platzi",
       "url": "/certificates/diploma-c-sharp-poo.pdf"
     },
     {
-      "name": "Clean Code en C#",
-      "date": "2024-09-20",
+      "name": "Buenas Prácticas y Código Limpio en C#",
+      "date": "2024-11-15",
       "issuer": "Platzi",
       "url": "/certificates/diploma-clean-code-csharp.pdf"
     },
     {
-      "name": "SOLID con C# y .NET",
-      "date": "2024-10-15",
+      "name": "Principios SOLID en C# y .NET",
+      "date": "2024-11-15",
       "issuer": "Platzi",
       "url": "/certificates/diploma-solid-csharp-net.pdf"
     },
     {
       "name": "Fundamentos de .NET",
-      "date": "2024-08-01",
+      "date": "2024-11-15",
       "issuer": "Platzi",
       "url": "/certificates/diploma-fundamentos-net.pdf"
     },
     {
-      "name": "LINQ",
-      "date": "2024-11-01",
+      "name": "C#: Manejo de Datos con LINQ",
+      "date": "2024-11-15",
       "issuer": "Platzi",
       "url": "/certificates/diploma-linq.pdf"
     },
     {
-      "name": "Dart",
-      "date": "2024-12-01",
+      "name": "Dart desde Cero",
+      "date": "2023-04-13",
       "issuer": "Platzi",
       "url": "/certificates/diploma-dart.pdf"
     },
     {
       "name": "Git y GitHub",
-      "date": "2024-07-15",
+      "date": "2024-11-15",
       "issuer": "Platzi",
       "url": "/certificates/diploma-gitgithub.pdf"
     },
     {
-      "name": "Prework: Windows",
-      "date": "2024-04-10",
+      "name": "Prework: Configuración de Entorno de Desarrollo en Windows",
+      "date": "2022-07-17",
       "issuer": "Platzi",
       "url": "/certificates/diploma-prework-windows.pdf"
     },
     {
-      "name": "English Level 1",
-      "date": "2024-03-15",
-      "issuer": "ICPNA",
+      "name": "Rocketbot Suite (Level 1)",
+      "date": "2024-08-30",
+      "issuer": "Rocketbot",
       "url": "/certificates/certificate-level-1.pdf"
     },
     {
-      "name": "Excel Avanzado",
-      "date": "2023-11-20",
-      "issuer": "Instituto",
+      "name": "Excelencia operativa en las empresas a través de la mejora continua de sus procesos",
+      "date": "2024-09-19",
+      "issuer": "CIP Cusco",
       "url": "/certificates/020%20JHON%20GUSTAVO%20CCARITA%20VELASQUEZ.pdf"
     }
   ],
