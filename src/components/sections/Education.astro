@@ -97,7 +97,7 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={icons[certIcon(name, issuer)]} />
 								</span>
 								<span class="flex min-w-0 flex-col">
-									<span class="cert-name">{name}</span>
+									<span class="cert-name" title={name}>{name}</span>
 									<span class="text-xs text-skin-muted">
 										{issuer} · {yearOf(date)}{" "}
 										{isPdf(url) && <span class="cert-badge">PDF</span>}
@@ -173,7 +173,8 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 	}
 
 	.cert-name {
-		@apply text-sm font-medium leading-snug text-skin-base;
+		/* Long official course titles: keep cards compact; the full title stays in the DOM and tooltip. */
+		@apply line-clamp-3 text-sm font-medium leading-snug text-skin-base;
 	}
 
 	.cert-badge {
