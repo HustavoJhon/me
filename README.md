@@ -1,51 +1,63 @@
 <a id="readme-top"></a>
 
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README">
+  <a href="https://hustavojhon.vercel.app">
     <img src="./public/favicon.svg" alt="Logo" width="100" height="100">
   </a>
 
   <h3 align="center">Portfolio</h3>
 
   <p align="center">
-    Welcome to My Portfolio <br>
-    This repository showcases my personal website, where I present my projects, skills, and experience. Built with modern web technologies, it serves as my digital portfolio.
-
+    My personal website and printable CV, in Spanish: projects, skills, experience, certificates and GitHub activity.<br>
+    <a href="https://hustavojhon.vercel.app">hustavojhon.vercel.app</a>
   </p>
 
 ![Astro](https://img.shields.io/badge/Astro-BC52EE.svg?style=for-the-badge&logo=Astro&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4.svg?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Json](https://img.shields.io/badge/JSON-000000.svg?style=for-the-badge&logo=JSON&logoColor=white)
 
 ---
 
 </div>
 
+Static site built with Astro 7 and Tailwind CSS 4. All content comes from `cv.json`; the page also prints as a CV.
 
+## Getting started
 
-### 2. Add Your Content:
-
-Edit the `cv.json` file to create your own printable Portfolio/CV.
-
-### 3. Launch the Development Server:
+Requirements: Node.js 24+ and pnpm (the version is pinned in `package.json` → `packageManager`).
 
 ```bash
-# Enjoy the results
-pnpm dev
+pnpm install
+pnpm dev        # http://localhost:4321
 ```
-1. Open [**http://localhost:4321**](http://localhost:4321/) in your browser to view the result 🚀
 
-### 4. Customisable colours:
-Change the data-theme of `cv.json` and choose one of the colour themes defined in theme.css, red, blue, green, cyber and default, with its variants in dark mode, or create your own.
+### Content
+
+Edit `cv.json`. Certificates listed there link to PDFs in `public/certificates/`; keep each entry's title, issuer and date identical to what is printed on the certificate.
+
+### Colour themes
+
+Set `basics.theme` in `cv.json` to one of the themes in `public/themes/themes.css` (red, blue, green, cyber, gruvbox or default), each with a dark variant, or add your own. Tailwind exposes them as `skin-*` utilities, mapped in `src/styles/global.css`.
 
 ## Commands
 
-|     | Command         | Action                                                                       |
-| :-- | :-------------- | :--------------------------------------------------------------------------- |
-| ⚙️  | `dev` o `start` | Launches a local development server at `localhost:4321`.                   |
-| ⚙️  | `build`         | Checks for errors and creates a production build in `./dist/`. |
-| ⚙️  | `preview`       | Local preview at `localhost:4321`                                       |
+|     | Command                 | Action                                                          |
+| :-- | :---------------------- | :-------------------------------------------------------------- |
+| ⚙️  | `dev` or `start`        | Launches a local development server at `localhost:4321`.        |
+| ⚙️  | `build`                 | Type-checks (`astro check`) and creates a production build in `./dist/`. |
+| ⚙️  | `preview`               | Serves the production build locally.                            |
+| 🧪  | `test`                  | Runs the unit tests (Node's built-in test runner).              |
+| 🔄  | `contributions:update`  | Refreshes the committed GitHub contributions snapshot.          |
+
+## Deployment
+
+The site is deployed by Vercel's Git integration (no `vercel.json`; Vercel detects Astro and uses pnpm from `packageManager`):
+
+- **Every push to `main` deploys to production automatically** (hustavojhon.vercel.app).
+- Pushes to any other branch, such as `dev`, create preview deployments only.
+
+Work on `dev` and merge into `main` only when the change is ready to go live.
 
 ## GitHub contributions data
 
