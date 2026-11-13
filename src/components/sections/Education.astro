@@ -174,7 +174,7 @@ const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
 
 	.cert-name {
 		/* Long official course titles: keep cards compact; the full title stays in the DOM and tooltip. */
-		@apply line-clamp-3 text-sm font-medium leading-snug text-skin-base;
+		@apply line-clamp-3 text-sm font-medium leading-snug text-skin-base print:line-clamp-none;
 	}
 
 	.cert-badge {
