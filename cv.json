@@ -37,7 +37,7 @@
     {
       "name": "iBit",
       "position": "Junior Backend Developer",
-      "location_type": "On site",
+      "location_type": "Presencial",
       "location": "Lima, Perú",
       "url": "https://ibit.pe",
       "startDate": "2024-01-01",
@@ -70,7 +70,7 @@
     {
       "institution": "Universidad",
       "url": "https://ucontinental.edu.pe/",
-      "area": "Ingenieria de Sistemas e Informatica",
+      "area": "Ingeniería de Sistemas e Informática",
       "studyType": "Bachillerato",
       "startDate": "2024-01-01",
       "endDate": "2029-12-01",
@@ -83,8 +83,8 @@
     {
       "institution": "Instituto",
       "url": "https://www.senati.edu.pe/",
-      "area": "Ingenieria de Software con Inteligencia Artificial",
-      "studyType": "Tecnico",
+      "area": "Ingeniería de Software con Inteligencia Artificial",
+      "studyType": "Técnico",
       "startDate": "2020-01-01",
       "endDate": "2023-12-01",
       "score": "3.9",
